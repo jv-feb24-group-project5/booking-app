@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<maven.checkstyle.plugin.configLocation>checkstyle.xml</maven.checkstyle.plugin.configLocation>
+		<liquibase-maven-plugin.version>4.28.0</liquibase-maven-plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -41,6 +42,12 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.7.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-maven-plugin</artifactId>
+			<version>${liquibase-maven-plugin.version}</version>
+		</dependency>
+
 
 	</dependencies>
 
@@ -78,6 +85,22 @@
 					<linkXRef>false</linkXRef>
 					<sourceDirectories>src</sourceDirectories>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>${liquibase-maven-plugin.version}</version>
+				<configuration>
+					<propertyFile>src/main/resources/liquibase.properties</propertyFile>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>update</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
