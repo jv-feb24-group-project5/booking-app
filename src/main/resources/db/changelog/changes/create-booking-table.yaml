@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: create-booking-table
       author: samoilenko
       changes:
         - createTable:
@@ -8,7 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGSERIAL
+                  type: BIGINT
                   constraints:
                     primaryKey: true
                     nullable: false
