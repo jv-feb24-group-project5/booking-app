@@ -11,3 +11,11 @@ databaseChangeLog:
       file: db/changelog/changes/create-users-roles-table.yaml
   - include:
       file: db/changelog/changes/insert-users.yaml
+  - include:
+      file: db/changelog/changes/create-address-table.yaml
+  - include:
+      file: db/changelog/changes/create-amenity-table.yaml
+  - include:
+      file: db/changelog/changes/create-accommodation-table.yaml
+  - include:
+      file: db/changelog/changes/create-accommodations-amenities-table.yaml
