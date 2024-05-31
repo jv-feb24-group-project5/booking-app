@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-user
+      author: vik
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: email, value: "admin@example.com"}
+              - column: {name: password, value: "$2a$10$LIRXPLebwgXiQHOzt6pFo./7R/8fXwegiZScvDqJrnMjixRXkEqHS"}
+              - column: {name: first_name, value: "John"}
+              - column: {name: last_name, value: "Snow"}
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: email, value: "user@example.com" }
+              - column: { name: password, value: "$2a$10$LIRXPLebwgXiQHOzt6pFo./7R/8fXwegiZScvDqJrnMjixRXkEqHS" }
+              - column: { name: first_name, value: "John" }
+              - column: { name: last_name, value: "Deer" }
+
+  - changeSet:
+      id: add-another-user
+      author: vik
+      changes:
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'ADMIN')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'admin@example.com')"
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'USER')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'user@example.com')"
