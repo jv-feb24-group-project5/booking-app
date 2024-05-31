@@ -37,3 +37,7 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+        - addUniqueConstraint:
+            tableName: addresses
+            columnNames: street, city, state, zip_code, country
+            constraintName: uc_address_unique_fields
