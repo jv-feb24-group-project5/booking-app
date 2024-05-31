@@ -28,15 +28,16 @@ public class UserController {
     }
 
     @PutMapping("{id}/role")
-    public UserResponseDto updateRoles(@PathVariable Long id,
-                                       @RequestBody @Valid UserUpdateRoleDto updateRoleDto) {
+    public UserResponseDto updateRoles(
+            @PathVariable Long id,
+            @RequestBody @Valid UserUpdateRoleDto updateRoleDto) {
         return userService.updateRoles(id, updateRoleDto);
     }
 
     @PatchMapping("/me")
-    public UserResponseDto updateProfile(@AuthenticationPrincipal User user,
-                                         @RequestBody
-                                         @Valid UserUpdateProfileDto updateProfileDto) {
+    public UserResponseDto updateProfile(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid UserUpdateProfileDto updateProfileDto) {
         return userService.updateProfile(user.getId(), updateProfileDto);
     }
 }
