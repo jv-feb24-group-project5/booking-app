@@ -14,15 +14,15 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Set;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.hibernate.annotations.SoftDelete;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "accommodations")
-@SoftDelete(columnName = "is_deleted")
-@Data
+@SQLDelete(sql = "UPDATE accommodations SET is_deleted = true WHERE id=?")
+@Getter
+@Setter
 public class Accommodation {
 
     @Id
@@ -35,8 +35,6 @@ public class Accommodation {
 
     @OneToOne
     @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Address location;
 
     @Column(nullable = false)
@@ -48,8 +46,7 @@ public class Accommodation {
             joinColumns = @JoinColumn(name = "accommodation_id"),
             inverseJoinColumns = @JoinColumn(name = "amenity_id")
     )
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
+
     private Set<Amenity> amenities;
 
     @Column(name = "daily_rate", nullable = false)
@@ -57,6 +54,9 @@ public class Accommodation {
 
     @Column(nullable = false)
     private Integer availability;
+
+    @Column(nullable = false, name = "is_deleted")
+    private boolean isDeleted;
 
     public enum Type {
         HOUSE, APARTMENT, CONDO, VACATION_HOME
