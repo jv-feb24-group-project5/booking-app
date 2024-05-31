@@ -27,9 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto updateRoles(Long userId, UserUpdateRoleDto updateRoleDto) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("Can`t find user with id: " + userId)
-        );
+        User user = getUserById(userId);
         user.setRoles(updateRoleDto.getRoles());
         userRepository.save(user);
         return userMapper.toResponseDto(user);
@@ -37,13 +35,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto updateProfile(Long userId, UserUpdateProfileDto updateProfileDto) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("Can`t find user with id: " + userId)
-        );
+        User user = getUserById(userId);
         user.setEmail(updateProfileDto.getEmail());
         user.setFirstName(updateProfileDto.getFirstName());
         user.setLastName(updateProfileDto.getLastName());
         userRepository.save(user);
         return userMapper.toResponseDto(user);
+    }
+
+    private User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFoundException("Can`t find user with id: " + userId)
+        );
     }
 }

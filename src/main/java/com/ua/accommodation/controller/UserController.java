@@ -5,8 +5,9 @@ import com.ua.accommodation.dto.user.UserUpdateProfileDto;
 import com.ua.accommodation.dto.user.UserUpdateRoleDto;
 import com.ua.accommodation.model.User;
 import com.ua.accommodation.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,21 +23,20 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/me")
-    public UserResponseDto getUser(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
+    public UserResponseDto getUser(@AuthenticationPrincipal User user) {
         return userService.getUser(user.getId());
     }
 
     @PutMapping("{id}/role")
     public UserResponseDto updateRoles(@PathVariable Long id,
-                                       @RequestBody UserUpdateRoleDto updateRoleDto) {
+                                       @RequestBody @Valid UserUpdateRoleDto updateRoleDto) {
         return userService.updateRoles(id, updateRoleDto);
     }
 
     @PatchMapping("/me")
-    public UserResponseDto updateProfile(Authentication authentication,
-                                         @RequestBody UserUpdateProfileDto updateProfileDto) {
-        User user = (User) authentication.getPrincipal();
+    public UserResponseDto updateProfile(@AuthenticationPrincipal User user,
+                                         @RequestBody
+                                         @Valid UserUpdateProfileDto updateProfileDto) {
         return userService.updateProfile(user.getId(), updateProfileDto);
     }
 }
