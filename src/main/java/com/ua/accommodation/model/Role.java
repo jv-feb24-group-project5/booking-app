@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Getter
@@ -19,7 +20,9 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(name = "roles")
 @SQLDelete(sql = "UPDATE roles SET is_deleted = true WHERE id = ?")
 @SQLRestriction(value = "is_deleted = false")
-public class Role {
+public class Role implements GrantedAuthority {
+    private static final String ROLE = "ROLE_";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,6 +31,11 @@ public class Role {
     private RoleName name;
     @Column(nullable = false)
     private boolean isDeleted;
+
+    @Override
+    public String getAuthority() {
+        return ROLE + name.name();
+    }
 
     public enum RoleName {
         ADMIN,
