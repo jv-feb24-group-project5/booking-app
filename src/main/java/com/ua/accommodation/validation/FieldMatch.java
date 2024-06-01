@@ -12,9 +12,13 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = FieldMatchValidator.class)
 public @interface FieldMatch {
     String message() default "Fields must match";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
+
     String field();
+
     String fieldMatch();
 
     @Target({ElementType.TYPE})
