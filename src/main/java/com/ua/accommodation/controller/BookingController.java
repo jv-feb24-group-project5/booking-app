@@ -65,7 +65,7 @@ public class BookingController { //todo add Pageable
     public BookingResponseDto updateBooking(
             @AuthenticationPrincipal User user,
             @PathVariable Long bookingId,
-            @RequestBody BookingUpdateDto updateDtoDto) {
+            @RequestBody @Valid BookingUpdateDto updateDtoDto) {
         return bookingService.updateBookingById(
                 user.getId(),
                 user.getRoles(),
