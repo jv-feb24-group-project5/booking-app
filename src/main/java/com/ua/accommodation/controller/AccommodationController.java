@@ -10,6 +10,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,6 +36,7 @@ public class AccommodationController {
             description = "Creates a new accommodation entry in the system."
     )
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public AccommodationDto addAccommodation(
             @RequestBody @Valid CreateAccommodationRequestDto accommodation
     ) {
@@ -46,6 +48,7 @@ public class AccommodationController {
             description = "Retrieves a list of all accommodations available in the system."
     )
     @GetMapping
+    @PreAuthorize("hasRole('USER')")
     public List<AccommodationDto> getAllAccommodations(Pageable pageable) {
         return accommodationService.getAccommodations(pageable);
     }
@@ -55,6 +58,7 @@ public class AccommodationController {
             description = "Retrieves details of a specific accommodation by its unique identifier."
     )
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
     public AccommodationDto getAccommodationById(@PathVariable Long id) {
         return accommodationService.getAccommodation(id);
     }
@@ -64,6 +68,7 @@ public class AccommodationController {
             description = "Updates details of an existing accommodation."
     )
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public AccommodationDto updateAccommodation(
             @PathVariable Long id,
             @RequestBody @Valid CreateAccommodationRequestDto updatedAccommodation) {
@@ -76,6 +81,7 @@ public class AccommodationController {
                     + "Can accept only fields that need to be changed."
     )
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public AccommodationDto partiallyUpdateAccommodation(
             @PathVariable Long id,
             @RequestBody @Valid CreateAccommodationRequestDto updatedAccommodation) {
@@ -88,6 +94,7 @@ public class AccommodationController {
     )
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteAccommodation(@PathVariable Long id) {
         accommodationService.deleteAccommodation(id);
     }
