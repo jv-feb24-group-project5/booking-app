@@ -11,4 +11,3 @@ import org.mapstruct.NullValueCheckStrategy;
 )
 public class MapperConfig {
 }
-
