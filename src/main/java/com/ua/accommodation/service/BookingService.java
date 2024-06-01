@@ -17,7 +17,10 @@ public interface BookingService {
 
     BookingResponseDto getBookingById(Long userId, Set<Role> roles, Long bookingId);
 
-    BookingResponseDto updateBookingById(Long userId, Set<Role> roles, Long bookingId, BookingUpdateDto updateDto);
+    BookingResponseDto updateBookingById(
+            Long userId, Set<Role> roles,
+            Long bookingId,
+            BookingUpdateDto updateDto);
 
-    void deleteBookingById(Long userId, Set<Role> roles, Long bookingId);
+    BookingResponseDto deleteBookingById(Long userId, Set<Role> roles, Long bookingId);
 }

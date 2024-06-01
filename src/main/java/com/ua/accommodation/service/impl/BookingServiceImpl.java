@@ -10,11 +10,11 @@ import com.ua.accommodation.model.Role;
 import com.ua.accommodation.repository.BookingRepository;
 import com.ua.accommodation.service.BookingService;
 import jakarta.persistence.EntityNotFoundException;
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -78,30 +78,30 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public void deleteBookingById(Long userId, Set<Role> roles, Long bookingId) {
+    public BookingResponseDto deleteBookingById(Long userId, Set<Role> roles, Long bookingId) {
         Booking booking = getBooking(bookingId);
         if (!isUserAdmin(roles)) {
             checkUserOwnershipOfBooking(userId, booking);
         }
         booking.setStatus(Booking.Status.CANCELED);
-        bookingRepository.save(booking);
-    }
-
-    private static boolean isUserAdmin(Set<Role> roles) {
-        return roles.stream().noneMatch(r -> r.getName().equals(Role.RoleName.ADMIN));
-    }
-
-    private static void checkUserOwnershipOfBooking(Long userId, Booking booking) {
-        if (booking.getUserId() != userId) {
-//            throw new AccessDeniedException(
-//                    "User does not have permission to manage this booking");
-        }
+        return bookingMapper.toResponseDto(bookingRepository.save(booking));
     }
 
     private Booking getBooking(Long bookingId) {
         return bookingRepository.findById(bookingId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find booking with id " + bookingId)
         );
+    }
+
+    private static boolean isUserAdmin(Set<Role> roles) {
+        return roles.stream().anyMatch(r -> r.getName().equals(Role.RoleName.ADMIN));
+    }
+
+    private static void checkUserOwnershipOfBooking(Long userId, Booking booking) {
+        if (booking.getUserId() != userId) {
+            throw new AccessDeniedException(
+                    "User does not have permission to manage this booking");
+        }
     }
 
     private void checkAccommodationAvailability(
@@ -113,7 +113,7 @@ public class BookingServiceImpl implements BookingService {
         if (conflicts > 0) {
             throw new AccommodationUnavailableException(
                     "Accommodation is not available from the "
-                            + checkInDate + "to the " + checkOutDate);
+                            + checkInDate + " to the " + checkOutDate);
         }
     }
 }

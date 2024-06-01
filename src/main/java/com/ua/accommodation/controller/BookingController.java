@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/bookings")
+@RequestMapping("/bookings")
 public class BookingController { //todo add Pageable
     private final BookingService bookingService;
 
@@ -75,10 +75,10 @@ public class BookingController { //todo add Pageable
 
     @DeleteMapping("/{bookingId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public void deleteBooking(
+    public BookingResponseDto deleteBooking(
             @AuthenticationPrincipal User user,
             @PathVariable Long bookingId) {
-        bookingService.deleteBookingById(
+        return bookingService.deleteBookingById(
                 user.getId(),
                 user.getRoles(),
                 bookingId);
