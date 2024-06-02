@@ -15,22 +15,23 @@ import com.ua.accommodation.model.Payment;
 import com.ua.accommodation.repository.PaymentRepository;
 import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class StripeService {
     private static final String SESSION_ID = "session_id={CHECKOUT_SESSION_ID}";
-    private static final String CLIENT_URL = "http://localhost:8080";
+    private static final String CLIENT_URL = "http://localhost:8080/api/checkout/payments/";
     @Value("${stripe.secret.key}")
     private String stripeApiKey;
-    @Autowired
-    private PaymentRepository paymentRepository;
-    @Autowired
-    private PaymentMapper paymentMapper;
+    private final PaymentRepository paymentRepository;
+    private final PaymentMapper paymentMapper;
 
     @PostConstruct
     public void init() {
@@ -45,9 +46,9 @@ public class StripeService {
                     .setMode(SessionCreateParams.Mode.PAYMENT)
                     .setCustomer(customer.getId())
                     .setSuccessUrl(CLIENT_URL
-                            + "/checkout/sessions/success?" + SESSION_ID)
+                            + "success?" + SESSION_ID)
                     .setCancelUrl(CLIENT_URL
-                            + "/checkout/sessions/cancel?" + SESSION_ID);
+                            + "cancel?" + SESSION_ID);
             sessionCreateParamsBuilder.putMetadata("bookingId", sessionDto.getBookingId());
             sessionCreateParamsBuilder.addLineItem(
                     SessionCreateParams.LineItem.builder()
@@ -56,7 +57,6 @@ public class StripeService {
                                     .builder()
                                     .setProductData(SessionCreateParams.LineItem.PriceData
                                             .ProductData.builder()
-                                            .putMetadata("booking_id", sessionDto.getBookingId())
                                             .setName("UA.ACCOMMODATION")
                                             .build()
                                     )
@@ -127,5 +127,11 @@ public class StripeService {
             return responseDto;
         }
         return null;
+    }
+
+    public List<PaymentResponseDto> findPaymentsByUserId(Long userId, Pageable pageable) {
+        return paymentRepository.findAll(pageable).stream()
+                .map(paymentMapper::toDto)
+                .toList();
     }
 }
