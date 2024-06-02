@@ -15,5 +15,5 @@ public class UserResponseDto {
     private String lastName;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<Role> roles = new HashSet<>();
+    private Set<Role.RoleName> roles = new HashSet<>();
 }
