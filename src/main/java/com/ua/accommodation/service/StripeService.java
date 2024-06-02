@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class StripeService {
+    private static final String SESSION_ID = "session_id={CHECKOUT_SESSION_ID}";
     private static final String CLIENT_URL = "http://localhost:8080";
     @Value("${stripe.secret.key}")
     private String stripeApiKey;
@@ -44,9 +45,9 @@ public class StripeService {
                     .setMode(SessionCreateParams.Mode.PAYMENT)
                     .setCustomer(customer.getId())
                     .setSuccessUrl(CLIENT_URL
-                            + "/checkout/sessions/success?session_id={CHECKOUT_SESSION_ID}")
+                            + "/checkout/sessions/success?" + SESSION_ID)
                     .setCancelUrl(CLIENT_URL
-                            + "/checkout/sessions/cancel?session_id={CHECKOUT_SESSION_ID}");
+                            + "/checkout/sessions/cancel?" + SESSION_ID);
             sessionCreateParamsBuilder.putMetadata("bookingId", sessionDto.getBookingId());
             sessionCreateParamsBuilder.addLineItem(
                     SessionCreateParams.LineItem.builder()
@@ -69,8 +70,6 @@ public class StripeService {
 
             SessionCreateParams.PaymentIntentData paymentIntentData =
                     SessionCreateParams.PaymentIntentData.builder()
-                            .putMetadata("cart_id", "12312121212121212121212")
-                            .putMetadata("user112121212121221212_id", sessionDto.getBookingId())
                             .build();
             sessionCreateParamsBuilder.setPaymentIntentData(paymentIntentData);
             Session session = Session.create(sessionCreateParamsBuilder.build());
