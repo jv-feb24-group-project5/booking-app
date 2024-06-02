@@ -10,5 +10,4 @@ import org.mapstruct.NullValueCheckStrategy;
         implementationPackage = "<PACKAGE_NAME>.impl"
 )
 public class MapperConfig {
-
 }

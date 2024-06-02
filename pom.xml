@@ -18,6 +18,9 @@
 		<maven.checkstyle.plugin.configLocation>checkstyle.xml</maven.checkstyle.plugin.configLocation>
 		<lombok.mapstruct.binding.version>0.2.0</lombok.mapstruct.binding.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+		<jjwt.version>0.12.5</jjwt.version>
+		<mapstruct.version>1.5.5.Final</mapstruct.version>
+		<lombok.mapstruct.binding.version>0.2.0</lombok.mapstruct.binding.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -34,6 +37,10 @@
 		<artifactId>spring-boot-starter-data-jpa</artifactId>
 	</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
@@ -42,6 +49,32 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>${jjwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>${jjwt.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${jjwt.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${mapstruct.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -62,6 +95,19 @@
 			<groupId>com.stripe</groupId>
 			<artifactId>stripe-java</artifactId>
 			<version>24.20.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${mapstruct.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -123,10 +169,36 @@
 				</executions>
 				<configuration>
 					<configLocation>${maven.checkstyle.plugin.configLocation}</configLocation>
+					<encoding>UTF-8</encoding>
 					<consoleOutput>true</consoleOutput>
 					<failsOnError>true</failsOnError>
 					<linkXRef>false</linkXRef>
 					<sourceDirectories>src</sourceDirectories>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>${lombok.mapstruct.binding.version}</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${mapstruct.version}</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 		</plugins>
