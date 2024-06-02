@@ -34,4 +34,11 @@ services:
       TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       GROUP_ID: ${GROUP_ID}
+      EXPIRATION_TIME: ${EXPIRATION_TIME}
+      SECRET_KEY: ${SECRET_KEY}
       JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
