@@ -42,31 +42,8 @@ public class StripeService {
         try {
             Customer customer = findOrCreateCustomer(
                     sessionDto.getUserEmail(), sessionDto.getUserName());
-            SessionCreateParams.Builder sessionCreateParamsBuilder = SessionCreateParams.builder()
-                    .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .setCustomer(customer.getId())
-                    .setSuccessUrl(CLIENT_URL
-                            + "success?" + SESSION_ID)
-                    .setCancelUrl(CLIENT_URL
-                            + "cancel?" + SESSION_ID);
-            sessionCreateParamsBuilder.putMetadata("bookingId", sessionDto.getBookingId());
-            sessionCreateParamsBuilder.addLineItem(
-                    SessionCreateParams.LineItem.builder()
-                            .setQuantity(1L)
-                            .setPriceData(SessionCreateParams.LineItem.PriceData
-                                    .builder()
-                                    .setProductData(SessionCreateParams.LineItem.PriceData
-                                            .ProductData.builder()
-                                            .setName("UA.ACCOMMODATION")
-                                            .build()
-                                    )
-                                    .setCurrency("USD")
-                                    .setUnitAmountDecimal(sessionDto.getAmount()
-                                            .multiply(BigDecimal.valueOf(100L))
-                                    )
-                                    .build())
-                            .build()
-            ).build();
+            SessionCreateParams.Builder sessionCreateParamsBuilder = getParamsBuilder(
+                    sessionDto, customer);
 
             SessionCreateParams.PaymentIntentData paymentIntentData =
                     SessionCreateParams.PaymentIntentData.builder()
@@ -84,25 +61,6 @@ public class StripeService {
         return null;
     }
 
-    private Customer findOrCreateCustomer(String email, String fullName) throws StripeException {
-        CustomerSearchParams params =
-                CustomerSearchParams.builder()
-                        .setQuery("email:'" + email + "'")
-                        .build();
-        CustomerSearchResult search = Customer.search(params);
-        Customer customer;
-        if (search.getData().isEmpty()) {
-            CustomerCreateParams customerCreateParams = CustomerCreateParams.builder()
-                    .setName(fullName)
-                    .setEmail(email)
-                    .build();
-            customer = Customer.create(customerCreateParams);
-        } else {
-            customer = search.getData().getFirst();
-        }
-        return customer;
-    }
-
     public PaymentResponseDto retrieveSession(String id) {
         Session session = null;
         try {
@@ -110,7 +68,6 @@ public class StripeService {
         } catch (StripeException e) {
             log.error("Exception retrievePaymentSession", e);
         }
-
         Payment payment = paymentRepository.findBySessionId(id).orElseThrow(
                 () -> new RuntimeException("Some troubles with payment.")
         );
@@ -133,5 +90,55 @@ public class StripeService {
         return paymentRepository.findAll(pageable).stream()
                 .map(paymentMapper::toDto)
                 .toList();
+    }
+
+    private static SessionCreateParams.Builder getParamsBuilder(
+            PaymentRequestDto sessionDto, Customer customer
+    ) {
+        SessionCreateParams.Builder sessionCreateParamsBuilder = SessionCreateParams.builder()
+                .setMode(SessionCreateParams.Mode.PAYMENT)
+                .setCustomer(customer.getId())
+                .setSuccessUrl(CLIENT_URL
+                        + "success?" + SESSION_ID)
+                .setCancelUrl(CLIENT_URL
+                        + "cancel?" + SESSION_ID);
+        sessionCreateParamsBuilder.putMetadata("bookingId", sessionDto.getBookingId());
+        sessionCreateParamsBuilder.addLineItem(
+                SessionCreateParams.LineItem.builder()
+                        .setQuantity(1L)
+                        .setPriceData(SessionCreateParams.LineItem.PriceData
+                                .builder()
+                                .setProductData(SessionCreateParams.LineItem.PriceData
+                                        .ProductData.builder()
+                                        .setName("UA.ACCOMMODATION")
+                                        .build()
+                                )
+                                .setCurrency("USD")
+                                .setUnitAmountDecimal(sessionDto.getAmount()
+                                        .multiply(BigDecimal.valueOf(100L))
+                                )
+                                .build())
+                        .build()
+        ).build();
+        return sessionCreateParamsBuilder;
+    }
+
+    private Customer findOrCreateCustomer(String email, String fullName) throws StripeException {
+        CustomerSearchParams params =
+                CustomerSearchParams.builder()
+                        .setQuery("email:'" + email + "'")
+                        .build();
+        CustomerSearchResult search = Customer.search(params);
+        Customer customer;
+        if (search.getData().isEmpty()) {
+            CustomerCreateParams customerCreateParams = CustomerCreateParams.builder()
+                    .setName(fullName)
+                    .setEmail(email)
+                    .build();
+            customer = Customer.create(customerCreateParams);
+        } else {
+            customer = search.getData().getFirst();
+        }
+        return customer;
     }
 }
