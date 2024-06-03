@@ -18,9 +18,9 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserResponseDto getUser(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("Can`t find user with id: " + userId)
+    public UserResponseDto getUser(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new EntityNotFoundException("Can`t find user with email: " + email)
         );
         return userMapper.toResponseDto(user);
     }
