@@ -142,5 +142,4 @@ public class AccommodationServiceImpl implements AccommodationService {
         NotificationEvent event = new NotificationEvent(this, message);
         eventPublisher.publishEvent(event);
     }
-
 }
