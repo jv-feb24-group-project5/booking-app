@@ -18,13 +18,13 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 class TelegramNotificationServiceTest {
 
     @Mock
-    Update update;
+    private Update update;
 
     @Mock
-    Message message;
+    private Message message;
 
     @InjectMocks
-    TelegramNotificationService telegramNotificationService;
+    private TelegramNotificationService telegramNotificationService;
 
     private final String botUsername = "testUsername";
     private final String botToken = "testToken";
@@ -32,7 +32,8 @@ class TelegramNotificationServiceTest {
 
     @BeforeEach
     void setUp() {
-        telegramNotificationService = new TelegramNotificationService(botUsername, botToken, groupId);
+        telegramNotificationService =
+                new TelegramNotificationService(botUsername, botToken, groupId);
     }
 
     @Test
