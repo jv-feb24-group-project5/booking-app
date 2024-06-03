@@ -20,7 +20,8 @@ services:
 
   app:
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: on-failure
     build: .
     env_file: ./.env
@@ -33,9 +34,10 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
-      GROUP_ID: ${GROUP_ID}
-      EXPIRATION_TIME: ${EXPIRATION_TIME}
-      SECRET_KEY: ${SECRET_KEY}
+      TELEGRAM_GROUP_ID: ${TELEGRAM_GROUP_ID}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      JWT_SECRET: ${JWT_SECRET}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
       JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
     logging:
       driver: "json-file"
