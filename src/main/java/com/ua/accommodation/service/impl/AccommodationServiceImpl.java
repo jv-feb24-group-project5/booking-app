@@ -11,6 +11,7 @@ import com.ua.accommodation.repository.AccommodationRepository;
 import com.ua.accommodation.repository.AddressRepository;
 import com.ua.accommodation.repository.AmenityRepository;
 import com.ua.accommodation.service.AccommodationService;
+import com.ua.accommodation.service.event.NotificationEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,7 @@ public class AccommodationServiceImpl implements AccommodationService {
     private final AddressRepository addressRepository;
     private final AmenityRepository amenityRepository;
     private final AccommodationMapper accommodationMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     @Override
@@ -37,6 +40,7 @@ public class AccommodationServiceImpl implements AccommodationService {
         mergeExistingAddress(accommodation);
         mergeExistingAmenities(accommodation);
         accommodationRepository.save(accommodation);
+        publishEvent(accommodation);
         return accommodationMapper.toDto(accommodation);
     }
 
@@ -62,6 +66,7 @@ public class AccommodationServiceImpl implements AccommodationService {
         mergeExistingAmenities(model);
         mergeExistingAddress(model);
         accommodationRepository.save(model);
+        publishEvent(model);
         return accommodationMapper.toDto(model);
     }
 
@@ -72,6 +77,7 @@ public class AccommodationServiceImpl implements AccommodationService {
         mergeExistingAmenities(accommodation);
         mergeExistingAddress(accommodation);
         accommodationRepository.save(accommodation);
+        publishEvent(accommodation);
         return accommodationMapper.toDto(accommodation);
     }
 
@@ -82,6 +88,8 @@ public class AccommodationServiceImpl implements AccommodationService {
                     "Accommodation with id " + accommodationId + " not found");
         }
         accommodationRepository.deleteById(accommodationId);
+        eventPublisher.publishEvent(new NotificationEvent(this,
+                String.format("Accommodation with id: %d was deleted.", accommodationId)));
     }
 
     private Accommodation getAccommodationWithAddressAndAmenitiesById(Long accommodationId) {
@@ -114,5 +122,22 @@ public class AccommodationServiceImpl implements AccommodationService {
             updatedAmenities.add(existingAmenities.getOrDefault(amenity.getName(), amenity));
         }
         accommodation.setAmenities(updatedAmenities);
+    }
+
+    private void publishEvent(Accommodation accommodation) {
+        StringBuilder builder = new StringBuilder();
+        String message = builder.append("Accommodation update!\n")
+                .append("Id: " + accommodation.getId() + "\n")
+                .append("Type: " + accommodation.getType() + "\n")
+                .append("Size: " + accommodation.getSize() + "\n")
+                .append("Location: " + accommodation.getLocation().toString() + "\n")
+                .append("Daily rate: " + accommodation.getDailyRate() + "$\n")
+                .append("Amenities: " + accommodation.getAmenities().stream()
+                        .map(Amenity::getName)
+                        .collect(Collectors.joining(", ")) + "\n")
+                .append("Sleep units: " + accommodation.getAvailability())
+                .toString();
+        NotificationEvent event = new NotificationEvent(this, message);
+        eventPublisher.publishEvent(event);
     }
 }

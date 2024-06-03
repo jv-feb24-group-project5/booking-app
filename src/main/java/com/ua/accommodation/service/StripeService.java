@@ -13,12 +13,14 @@ import com.ua.accommodation.dto.PaymentResponseDto;
 import com.ua.accommodation.mapper.PaymentMapper;
 import com.ua.accommodation.model.Payment;
 import com.ua.accommodation.repository.PaymentRepository;
+import com.ua.accommodation.service.event.NotificationEvent;
 import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +34,7 @@ public class StripeService {
     private String stripeApiKey;
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @PostConstruct
     public void init() {
@@ -54,6 +57,7 @@ public class StripeService {
             paymentRepository.save(payment);
             PaymentResponseDto responseDto = paymentMapper.toDto(payment);
             responseDto.setMessage(" Awaiting payment. ");
+            publishEvent(payment);
             return responseDto;
         } catch (StripeException e) {
             log.error("Exception createPaymentSession", e);
@@ -76,11 +80,13 @@ public class StripeService {
             paymentRepository.save(payment);
             PaymentResponseDto responseDto = paymentMapper.toDto(payment);
             responseDto.setMessage("Payment successful.");
+            publishEvent(payment);
             return responseDto;
         }
         if (session.getPaymentStatus().equals("unpaid")) {
             PaymentResponseDto responseDto = paymentMapper.toDto(payment);
             responseDto.setMessage("Payment paused, you can complete it later.");
+            publishEvent(payment);
             return responseDto;
         }
         return null;
@@ -140,5 +146,18 @@ public class StripeService {
             customer = search.getData().getFirst();
         }
         return customer;
+    }
+
+    private void publishEvent(Payment payment) {
+        StringBuilder builder = new StringBuilder();
+        String message = builder.append("Payment update!\n")
+                .append("Id: " + payment.getId() + "\n")
+                .append("Booking id: " + payment.getBookingId() + "\n")
+                .append("Amount to pay: " + payment.getAmountToPay() + "\n")
+                .append("Created at: " + payment.getCreated() + "\n")
+                .append("Expires at: " + payment.getExpiresAt())
+                .toString();
+        NotificationEvent event = new NotificationEvent(this, message);
+        eventPublisher.publishEvent(event);
     }
 }
