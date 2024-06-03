@@ -7,23 +7,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.TYPE})
+@Constraint(validatedBy = DateIsNowOrFutureValidator.class)
+@Target({
+        ElementType.FIELD,
+        ElementType.METHOD,
+        ElementType.PARAMETER,
+        ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = FieldMatchValidator.class)
-public @interface FieldMatch {
-    String message() default "Fields must match";
-
+public @interface DateIsNowOrFuture {
+    String message() default "date must be present or in the future";
     Class<?>[] groups() default {};
-
     Class<? extends Payload>[] payload() default {};
-
-    String field();
-
-    String fieldMatch();
-
-    @Target({ElementType.TYPE})
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface List {
-        FieldMatch[] value();
-    }
 }
