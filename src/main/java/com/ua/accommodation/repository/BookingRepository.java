@@ -2,6 +2,8 @@ package com.ua.accommodation.repository;
 
 import com.ua.accommodation.model.Booking;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,4 +29,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             Long accommodationId,
             LocalDate newCheckInDate,
             LocalDate newCheckOutDate);
+
+    List<Booking> findBookingByStatusInAndCheckOutDateBefore(Collection<Booking.Status> status,
+                                                             LocalDate checkOutDate);
 }
