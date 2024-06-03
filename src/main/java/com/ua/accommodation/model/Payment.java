@@ -9,7 +9,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
-import java.net.URL;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
@@ -30,17 +32,50 @@ public class Payment {
     private Status status;
     @Column(nullable = false)
     private Long bookingId;
-    @Column(nullable = false)
-    private URL sessionUrl;
+    @Column(name = "session_url", nullable = false)
+    private String sessionUrl;
     @Column(nullable = false)
     private String sessionId;
     @Column(nullable = false)
     private BigDecimal amountToPay;
     @Column(nullable = false)
+    private LocalDateTime created;
+    @Column(nullable = false)
+    private LocalDateTime expiresAt;
+    @Column(nullable = false)
     private boolean isDeleted;
 
     public enum Status {
-        PENDING,
-        PAID
+        PENDING("unpaid"),
+        PAID("paid");
+
+        private final String label;
+
+        Status(String label) {
+            this.label = label;
+        }
+
+        public static Status findByCode(String label) {
+            for (Status status : values()) {
+                if (status.label.equals(label)) {
+                    return status;
+                }
+            }
+            throw new UnsupportedOperationException("Wrong operation code: " + label);
+        }
+    }
+
+    public void setAmountToPay(BigDecimal amount) {
+        this.amountToPay = amount.divide(BigDecimal.valueOf(100L));
+    }
+
+    public void setCreated(Long createdTimestamp) {
+        this.created = LocalDateTime
+                .ofInstant(Instant.ofEpochSecond(createdTimestamp), ZoneId.systemDefault());
+    }
+
+    public void setExpiresAt(Long expiresAtTimestamp) {
+        this.expiresAt = LocalDateTime
+                .ofInstant(Instant.ofEpochSecond(expiresAtTimestamp), ZoneId.systemDefault());
     }
 }

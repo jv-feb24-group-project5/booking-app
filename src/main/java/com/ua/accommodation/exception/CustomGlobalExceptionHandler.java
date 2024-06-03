@@ -1,5 +1,6 @@
 package com.ua.accommodation.exception;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
@@ -37,6 +38,13 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .toList();
         log.error("MethodArgumentNotValidException occured", ex);
         return getResponseEntity(HttpStatus.BAD_REQUEST, errors);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
+        log.error("EntityNotFoundException occurred:", ex);
+        return getResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

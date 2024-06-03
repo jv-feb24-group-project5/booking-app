@@ -5,7 +5,7 @@ import com.ua.accommodation.dto.user.UserUpdateProfileDto;
 import com.ua.accommodation.dto.user.UserUpdateRoleDto;
 
 public interface UserService {
-    UserResponseDto getUser(Long userId);
+    UserResponseDto getUser(String email);
 
     UserResponseDto updateRoles(Long userId, UserUpdateRoleDto updateRoleDto);
 
