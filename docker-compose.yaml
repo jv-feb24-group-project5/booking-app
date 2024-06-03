@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  db:
+    platform: linux/arm64
+    image: postgres
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    ports:
+      - ${POSTGRES_LOCAL_PORT}:${POSTGRES_DOCKER_PORT}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DATABASE}"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  app:
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
+    build: .
+    env_file: ./.env
+    ports:
+      - ${SPRING_LOCAL_PORT}:${SPRING_DOCKER_PORT}
+      - ${DEBUG_PORT}:${DEBUG_PORT}
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:${POSTGRES_DOCKER_PORT}/${POSTGRES_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_GROUP_ID: ${TELEGRAM_GROUP_ID}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      JWT_SECRET: ${JWT_SECRET}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
