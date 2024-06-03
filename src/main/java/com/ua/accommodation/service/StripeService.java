@@ -150,13 +150,14 @@ public class StripeService {
 
     private void publishEvent(Payment payment) {
         StringBuilder builder = new StringBuilder();
-        String message = builder.append("Payment update!\n")
-                .append("Id: " + payment.getId() + "\n")
-                .append("Booking id: " + payment.getBookingId() + "\n")
-                .append("Amount to pay: " + payment.getAmountToPay() + "\n")
-                .append("Created at: " + payment.getCreated() + "\n")
-                .append("Expires at: " + payment.getExpiresAt())
+        String message = builder.append("Payment update!").append(System.lineSeparator())
+                .append("Id: ").append(payment.getId()).append(System.lineSeparator())
+                .append("Booking id: ").append(payment.getBookingId()).append(System.lineSeparator())
+                .append("Amount to pay: ").append(payment.getAmountToPay()).append(System.lineSeparator())
+                .append("Created at: ").append(payment.getCreated()).append(System.lineSeparator())
+                .append("Expires at: ").append(payment.getExpiresAt())
                 .toString();
+
         NotificationEvent event = new NotificationEvent(this, message);
         eventPublisher.publishEvent(event);
     }

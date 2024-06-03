@@ -126,18 +126,21 @@ public class AccommodationServiceImpl implements AccommodationService {
 
     private void publishEvent(Accommodation accommodation) {
         StringBuilder builder = new StringBuilder();
-        String message = builder.append("Accommodation update!\n")
-                .append("Id: " + accommodation.getId() + "\n")
-                .append("Type: " + accommodation.getType() + "\n")
-                .append("Size: " + accommodation.getSize() + "\n")
-                .append("Location: " + accommodation.getLocation().toString() + "\n")
-                .append("Daily rate: " + accommodation.getDailyRate() + "$\n")
-                .append("Amenities: " + accommodation.getAmenities().stream()
-                        .map(Amenity::getName)
-                        .collect(Collectors.joining(", ")) + "\n")
-                .append("Sleep units: " + accommodation.getAvailability())
+        String message = builder.append("Accommodation update!").append(System.lineSeparator())
+                .append("Id: ").append(accommodation.getId()).append(System.lineSeparator())
+                .append("Type: ").append(accommodation.getType()).append(System.lineSeparator())
+                .append("Size: ").append(accommodation.getSize()).append(System.lineSeparator())
+                .append("Location: ").append(accommodation.getLocation().toString()).append(System.lineSeparator())
+                .append("Daily rate: ").append(accommodation.getDailyRate()).append("$").append(System.lineSeparator())
+                .append("Amenities: ").append(
+                        accommodation.getAmenities().stream()
+                                .map(Amenity::getName)
+                                .collect(Collectors.joining(", "))
+                ).append(System.lineSeparator())
+                .append("Sleep units: ").append(accommodation.getAvailability())
                 .toString();
         NotificationEvent event = new NotificationEvent(this, message);
         eventPublisher.publishEvent(event);
     }
+
 }
