@@ -1,6 +1,6 @@
 package com.ua.accommodation.dto.booking;
 
-import com.ua.accommodation.model.Booking;
+import com.ua.accommodation.model.Booking.Status;
 import java.time.LocalDate;
 import lombok.Data;
 
@@ -11,5 +11,5 @@ public class BookingResponseDto {
     private LocalDate checkOutDate;
     private Long accommodationID;
     private Long userId;
-    private Booking.Status status;
+    private Status status;
 }

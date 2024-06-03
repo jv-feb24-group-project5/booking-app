@@ -6,6 +6,7 @@ import com.ua.accommodation.dto.booking.BookingUpdateDto;
 import com.ua.accommodation.exception.AccommodationUnavailableException;
 import com.ua.accommodation.mapper.BookingMapper;
 import com.ua.accommodation.model.Booking;
+import com.ua.accommodation.model.Booking.Status;
 import com.ua.accommodation.model.Role;
 import com.ua.accommodation.repository.BookingRepository;
 import com.ua.accommodation.service.BookingService;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -31,20 +33,23 @@ public class BookingServiceImpl implements BookingService {
                 requestDto.getAccommodationID());
         Booking newBooking = bookingMapper.toEntity(requestDto);
         newBooking.setUserId(userId);
-        newBooking.setStatus(Booking.Status.PENDING);
+        newBooking.setStatus(Status.PENDING);
         return bookingMapper.toResponseDto(bookingRepository.save(newBooking));
     }
 
     @Override
-    public List<BookingResponseDto> getUsersBookingsByStatus(Long userId, Booking.Status status) {
-        return bookingRepository.findByIdAndStatus(userId, status).stream()
+    public List<BookingResponseDto> getUsersBookingsByStatus(
+            Pageable pageable,
+            Long userId,
+            Status status) {
+        return bookingRepository.findByIdAndStatus(pageable, userId, status).stream()
                 .map(bookingMapper::toResponseDto)
                 .toList();
     }
 
     @Override
-    public List<BookingResponseDto> getBookingsByUserId(Long userId) {
-        return bookingRepository.findByUserId(userId).stream()
+    public List<BookingResponseDto> getBookingsByUserId(Pageable pageable, Long userId) {
+        return bookingRepository.findByUserId(pageable, userId).stream()
                 .map(bookingMapper::toResponseDto)
                 .toList();
     }
@@ -52,7 +57,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponseDto getBookingById(Long userId, Set<Role> roles, Long bookingId) {
         Booking booking = getBooking(bookingId);
-        if (!isUserAdmin(roles)) {
+        if (isUserNotAdmin(roles)) {
             checkUserOwnershipOfBooking(userId, booking);
         }
         return bookingMapper.toResponseDto(booking);
@@ -65,7 +70,7 @@ public class BookingServiceImpl implements BookingService {
             Long bookingId,
             BookingUpdateDto updateDto) {
         Booking booking = getBooking(bookingId);
-        if (!isUserAdmin(roles)) {
+        if (isUserNotAdmin(roles)) {
             checkUserOwnershipOfBooking(userId, booking);
         }
         checkAccommodationAvailability(
@@ -80,10 +85,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponseDto deleteBookingById(Long userId, Set<Role> roles, Long bookingId) {
         Booking booking = getBooking(bookingId);
-        if (!isUserAdmin(roles)) {
+        if (isUserNotAdmin(roles)) {
             checkUserOwnershipOfBooking(userId, booking);
         }
-        booking.setStatus(Booking.Status.CANCELED);
+        booking.setStatus(Status.CANCELED);
         return bookingMapper.toResponseDto(bookingRepository.save(booking));
     }
 
@@ -93,11 +98,11 @@ public class BookingServiceImpl implements BookingService {
         );
     }
 
-    private static boolean isUserAdmin(Set<Role> roles) {
-        return roles.stream().anyMatch(r -> r.getName().equals(Role.RoleName.ADMIN));
+    private boolean isUserNotAdmin(Set<Role> roles) {
+        return roles.stream().noneMatch(r -> r.getName().equals(Role.RoleName.ADMIN));
     }
 
-    private static void checkUserOwnershipOfBooking(Long userId, Booking booking) {
+    private void checkUserOwnershipOfBooking(Long userId, Booking booking) {
         if (booking.getUserId() != userId) {
             throw new AccessDeniedException(
                     "User does not have permission to manage this booking");

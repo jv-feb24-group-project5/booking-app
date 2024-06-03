@@ -9,6 +9,7 @@ import com.ua.accommodation.service.BookingService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,10 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/bookings")
-public class BookingController { //todo add Pageable
+public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
@@ -38,15 +40,18 @@ public class BookingController { //todo add Pageable
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public List<BookingResponseDto> getUsersBookingsByStatus(
+            Pageable pageable,
             @RequestParam(name = "user_id") Long userId,
             @RequestParam Booking.Status status) {
-        return bookingService.getUsersBookingsByStatus(userId, status);
+        return bookingService.getUsersBookingsByStatus(pageable, userId, status);
     }
 
     @GetMapping("/my")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public List<BookingResponseDto> getUsersBookings(@AuthenticationPrincipal User user) {
-        return bookingService.getBookingsByUserId(user.getId());
+    public List<BookingResponseDto> getUsersBookings(
+            Pageable pageable,
+            @AuthenticationPrincipal User user) {
+        return bookingService.getBookingsByUserId(pageable, user.getId());
     }
 
     @GetMapping("/{bookingId}")
