@@ -68,7 +68,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(AccommodationUnavailableException.class)
-    protected ResponseEntity<Object> handleUserNotFoundException(
+    protected ResponseEntity<Object> handleAccommodationUnavailableException(
             AccommodationUnavailableException ex) {
         log.error("AccommodationUnavailableException occurred", ex);
         return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
