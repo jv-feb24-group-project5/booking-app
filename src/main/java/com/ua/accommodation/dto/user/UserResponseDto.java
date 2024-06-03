@@ -1,6 +1,7 @@
 package com.ua.accommodation.dto.user;
 
-import com.ua.accommodation.model.Role;
+import static com.ua.accommodation.model.Role.RoleName;
+
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Data;
@@ -15,5 +16,5 @@ public class UserResponseDto {
     private String lastName;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<Role.RoleName> roles = new HashSet<>();
+    private Set<RoleName> roles = new HashSet<>();
 }
