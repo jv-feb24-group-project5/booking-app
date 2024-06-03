@@ -24,7 +24,7 @@ public class UserController {
 
     @GetMapping("/me")
     public UserResponseDto getUser(@AuthenticationPrincipal User user) {
-        return userService.getUser(user.getId());
+        return userService.getUser(user.getEmail());
     }
 
     @PutMapping("{id}/role")
