@@ -3,7 +3,7 @@ package com.ua.accommodation.controller;
 import com.ua.accommodation.dto.booking.BookingRequestDto;
 import com.ua.accommodation.dto.booking.BookingResponseDto;
 import com.ua.accommodation.dto.booking.BookingUpdateDto;
-import com.ua.accommodation.model.Booking;
+import com.ua.accommodation.model.Booking.Status;
 import com.ua.accommodation.model.User;
 import com.ua.accommodation.service.BookingService;
 import jakarta.validation.Valid;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -42,7 +41,7 @@ public class BookingController {
     public List<BookingResponseDto> getUsersBookingsByStatus(
             Pageable pageable,
             @RequestParam(name = "user_id") Long userId,
-            @RequestParam Booking.Status status) {
+            @RequestParam Status status) {
         return bookingService.getUsersBookingsByStatus(pageable, userId, status);
     }
 

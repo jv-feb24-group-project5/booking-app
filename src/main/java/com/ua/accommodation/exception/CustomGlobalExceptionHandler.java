@@ -36,7 +36,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         List<String> errors = ex.getBindingResult().getAllErrors().stream()
                 .map(this::getErrorMessage)
                 .toList();
-        log.error("MethodArgumentNotValidException occured", ex);
+        log.error("MethodArgumentNotValidException occurred", ex);
         return getResponseEntity(HttpStatus.BAD_REQUEST, errors);
     }
 
@@ -56,15 +56,22 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                         violation -> violation.getPropertyPath().toString(),
                         ConstraintViolation::getMessage
                 ));
-        log.error("ConstraintViolationException occured", ex);
+        log.error("ConstraintViolationException occurred", ex);
         return getResponseEntity(HttpStatus.BAD_REQUEST, errors);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     protected ResponseEntity<Object> handleUserNotFoundException(AccessDeniedException ex) {
         String bodyOfResponse = "Access denied: " + ex.getMessage();
-        log.error("AccessDeniedException occured", ex);
+        log.error("AccessDeniedException occurred", ex);
         return getResponseEntity(HttpStatus.FORBIDDEN, bodyOfResponse);
+    }
+
+    @ExceptionHandler(AccommodationUnavailableException.class)
+    protected ResponseEntity<Object> handleUserNotFoundException(
+            AccommodationUnavailableException ex) {
+        log.error("AccommodationUnavailableException occurred", ex);
+        return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     private ResponseEntity<Object> getResponseEntity(HttpStatus status, Object errors) {
