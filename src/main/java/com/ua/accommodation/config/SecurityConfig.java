@@ -40,7 +40,8 @@ public class SecurityConfig {
                                         "/checkout/payments/cancel/**",
                                         "/checkout/payments/success/**",
                                         "/swagger-ui/**",
-                                        "/v3/api-docs/**")
+                                        "/v3/api-docs/**",
+                                        "/actuator/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
