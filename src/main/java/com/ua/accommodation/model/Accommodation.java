@@ -1,9 +1,11 @@
 package com.ua.accommodation.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,8 +23,8 @@ import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "accommodations")
-@SQLDelete(sql = "UPDATE accommodations SET is_deleted = true WHERE id=?")
-@SQLRestriction("is_deleted = false")
+@SQLDelete(sql = "UPDATE accommodations SET deleted = true WHERE id=?")
+@SQLRestriction("deleted = false")
 @Getter
 @Setter
 public class Accommodation {
@@ -35,20 +37,19 @@ public class Accommodation {
     @Enumerated(EnumType.STRING)
     private Type type;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
     private Address location;
 
     @Column(nullable = false)
     private String size;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "accommodations_amenities",
             joinColumns = @JoinColumn(name = "accommodation_id"),
             inverseJoinColumns = @JoinColumn(name = "amenity_id")
     )
-
     private Set<Amenity> amenities;
 
     @Column(name = "daily_rate", nullable = false)
@@ -57,8 +58,8 @@ public class Accommodation {
     @Column(nullable = false)
     private Integer availability;
 
-    @Column(nullable = false, name = "is_deleted")
-    private boolean isDeleted;
+    @Column(nullable = false)
+    private boolean deleted;
 
     public enum Type {
         HOUSE, APARTMENT, CONDO, VACATION_HOME
