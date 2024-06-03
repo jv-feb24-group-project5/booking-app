@@ -127,15 +127,17 @@ public class AccommodationServiceImpl implements AccommodationService {
     private void publishEvent(Accommodation accommodation) {
         StringBuilder builder = new StringBuilder();
         String message = builder.append("Accommodation update!\n")
-                .append("Id: " + accommodation.getId() + "\n")
-                .append("Type: " + accommodation.getType() + "\n")
-                .append("Size: " + accommodation.getSize() + "\n")
-                .append("Location: " + accommodation.getLocation().toString() + "\n")
-                .append("Daily rate: " + accommodation.getDailyRate() + "$\n")
-                .append("Amenities: " + accommodation.getAmenities().stream()
-                        .map(Amenity::getName)
-                        .collect(Collectors.joining(", ")) + "\n")
-                .append("Sleep units: " + accommodation.getAvailability())
+                .append("Id: ").append(accommodation.getId()).append("\n")
+                .append("Type: ").append(accommodation.getType()).append("\n")
+                .append("Size: ").append(accommodation.getSize()).append("\n")
+                .append("Location: ").append(accommodation.getLocation().toString()).append("\n")
+                .append("Daily rate: ").append(accommodation.getDailyRate()).append("$\n")
+                .append("Amenities: ").append(
+                        accommodation.getAmenities().stream()
+                                .map(Amenity::getName)
+                                .collect(Collectors.joining(", "))
+                ).append("\n")
+                .append("Sleep units: ").append(accommodation.getAvailability())
                 .toString();
         NotificationEvent event = new NotificationEvent(this, message);
         eventPublisher.publishEvent(event);
