@@ -9,17 +9,17 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = FieldMatchValidator.class)
-public @interface FieldMatch {
+@Constraint(validatedBy = DateRangeValidator.class)
+public @interface ValidDateRange {
     String message() default "Fields must match";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    String field();
+    String startDate();
 
-    String fieldMatch();
+    String endDate();
 
     @Target({ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
