@@ -1,4 +1,4 @@
-package com.ua.accommodation.dto;
+package com.ua.accommodation.dto.payment;
 
 import com.ua.accommodation.model.Payment;
 import java.math.BigDecimal;

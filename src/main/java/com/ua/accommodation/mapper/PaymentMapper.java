@@ -2,7 +2,7 @@ package com.ua.accommodation.mapper;
 
 import com.stripe.model.checkout.Session;
 import com.ua.accommodation.config.MapperConfig;
-import com.ua.accommodation.dto.PaymentResponseDto;
+import com.ua.accommodation.dto.payment.PaymentResponseDto;
 import com.ua.accommodation.model.Payment;
 import java.math.BigDecimal;
 import org.mapstruct.Mapper;

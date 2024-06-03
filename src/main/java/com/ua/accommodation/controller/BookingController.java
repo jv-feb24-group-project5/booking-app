@@ -6,6 +6,8 @@ import com.ua.accommodation.dto.booking.BookingUpdateDto;
 import com.ua.accommodation.model.Booking.Status;
 import com.ua.accommodation.model.User;
 import com.ua.accommodation.service.BookingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +27,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/bookings")
+@Tag(name = "Bookings management", description = "Endpoints for managing bookings")
 public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @Operation(
+            summary = "Create new booking",
+            description = "You can create new booking. Available for admins and users"
+    )
     public BookingResponseDto createBooking(
             @AuthenticationPrincipal User user,
             @RequestBody @Valid BookingRequestDto requestDto) {
@@ -38,6 +45,10 @@ public class BookingController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(
+            summary = "Get bookings by status",
+            description = "Get list of bookings based on status"
+    )
     public List<BookingResponseDto> getUsersBookingsByStatus(
             Pageable pageable,
             @RequestParam(name = "user_id") Long userId,
@@ -47,6 +58,10 @@ public class BookingController {
 
     @GetMapping("/my")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @Operation(
+            summary = "Get bookings",
+            description = "Get list of bookings for current user"
+    )
     public List<BookingResponseDto> getUsersBookings(
             Pageable pageable,
             @AuthenticationPrincipal User user) {
@@ -55,6 +70,10 @@ public class BookingController {
 
     @GetMapping("/{bookingId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @Operation(
+            summary = "Get booking by id",
+            description = "Get specify booking by id"
+    )
     public BookingResponseDto getBookingById(
             @AuthenticationPrincipal User user,
             @PathVariable Long bookingId) {
@@ -66,6 +85,11 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @Operation(
+            summary = "Update booking",
+            description = "Update specify booking by booking id. "
+                    + "You can update checkInDate and CheckOutDate"
+    )
     public BookingResponseDto updateBooking(
             @AuthenticationPrincipal User user,
             @PathVariable Long bookingId,
@@ -79,6 +103,10 @@ public class BookingController {
 
     @DeleteMapping("/{bookingId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @Operation(
+            summary = "Delete booking",
+            description = "Delete specify booking by bookingId"
+    )
     public BookingResponseDto deleteBooking(
             @AuthenticationPrincipal User user,
             @PathVariable Long bookingId) {
