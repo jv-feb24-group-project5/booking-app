@@ -1,6 +1,7 @@
+![Project Logo](images/logo_project.jpg)
 # Accommodation Service Web Application
 
-## Introduction
+## Introduction 📜
 
 Welcome to the Accommodation Service Web Application!
 This project was inspired by the need for a comprehensive platform that allows users to browse,
@@ -8,7 +9,7 @@ purchase, and manage bookings online. It aims to provide a seamless experience f
 and administrators. Users can browse bookings by status, receive notifications about actions,
 and create new bookings, while administrators have the ability to manage the accesses and accommodations.
 
-## Technologies and Tools Used
+## Technologies and Tools Used 🛠️
 
 This project leverages a range of modern technologies and tools to ensure robust performance and security:
 
@@ -22,19 +23,19 @@ This project leverages a range of modern technologies and tools to ensure robust
 - **Stripe**: For taking payment from users.
 - **Telegram**: For sending notifications to users.
 
-## Features
+## Features 🌟
 
-### User Functionalities
+### User Functionalities 🥺
 - **Create Booking**: Users can create and manage their bookings.
 - **User Manage**: Users can check info about their profiles and update it.
 - **View Accommodations**: Users can view all accommodations or specific by id.
 
-### Admin Functionalities
-- Admins can update roles for users
-- Admins can browse all bookings by status
-- Admins can create, update and delete accommodations
+### Admin Functionalities 😊
+- **Roles Access**: Admins can update roles for users
+- **Manage Bookings**: Admins can browse all bookings by status
+- **Manage Accommodation**: Admins can create, update and delete accommodations
 
-## Setup Instructions
+## Setup Instructions 🧙‍♂️🔮
 
 To set up the project locally, follow these steps:
 
@@ -56,27 +57,26 @@ If you prefer Postgres, ensure you update the necessary configuration in `applic
 
 Create a .env file in the root directory of your project with the following content:
 
-- POSTGRES_USER=postgres
-- POSTGRES_PASSWORD=MyPostgres1234
-- POSTGRES_DATABASE=accommodation_app
-- POSTGRES_LOCAL_PORT=5433
-- POSTGRES_DOCKER_PORT=5432
+- POSTGRES_USER=your_user_name
+- POSTGRES_PASSWORD=your_password
+- POSTGRES_DATABASE=your_database_name
+- POSTGRES_LOCAL_PORT=your_local_port
+- POSTGRES_DOCKER_PORT=your_docker_port
 
-- SPRING_LOCAL_PORT=8083
-- SPRING_DOCKER_PORT=8080
-- DEBUG_PORT=5005
+- SPRING_LOCAL_PORT=your_local_port
+- SPRING_DOCKER_PORT=your_docker_port
+- DEBUG_PORT=your_debug_port 
 
-- TELEGRAM_BOT_USERNAME=TestBot
-- TELEGRAM_BOT_TOKEN=7470012247:AAG62tRxMqnlJbMxBpT2kyajixX_e6LMXGc
-- TELEGRAM_GROUP_ID=-1002152428035
+- TELEGRAM_BOT_USERNAME=your_telegram_bot
+- TELEGRAM_BOT_TOKEN=your_bot_token
+- TELEGRAM_GROUP_ID=your_group_id
 
-- JWT_EXPIRATION=300000000
-- JWT_SECRET=s9a8ufboni29837qyuialksldizxcvASDaeuyfujdjcb3
+- JWT_EXPIRATION=your_expiration_time
+- JWT_SECRET=your_jwt_secret
 
-- STRIPE_SECRET_KEY=sk_test_26PHem9AhJZvU623DfE1x4sd
+- STRIPE_SECRET_KEY=your_stripe_secret
 
-
-### Building and Running the Project
+### Building and Running the Project ⚙️
 
 1. **Clone the repository**:
     ```bash
@@ -109,12 +109,12 @@ The application uses JWT for secured access. Use the following credentials to lo
     Login: admin@example.com
     Password: StrongPassword123
 
-### Testing the Setup
+### Testing the Setup 👀
 
 After starting the application, you can verify the setup by accessing the Swagger UI link.
 Ensure that the web application is running and the APIs are accessible.
 
-## Postman Collection
+## Postman Collection 📨
 To facilitate API testing, a Postman collection is provided.
 You can import this collection into Postman to test the various endpoints.
 
@@ -123,14 +123,14 @@ You can import this collection into Postman to test the various endpoints.
 The collection includes pre-configured requests for all available endpoints,
 making it easier to test the application's functionalities.
 
-## Conclusion.
+## Conclusion 🏁
 
 This Accommodation Service Web Application provides a comprehensive solution for users to manage
 their bookings and for administrators to manage accommodations and user access.
 The project leverages robust technologies and tools to ensure a secure and scalable platform.
 We welcome your feedback and contributions to further enhance this application.
 
-### Authors
+### Authors 🧑‍🧑‍🧒‍🧒🧑‍🧑‍
 - [Anton Haiduk](https://github.com/TonyH277)
 - [Oleksandr Molchanov](https://github.com/MolchanovAlexander)
 - [Viktor Kushnir](https://github.com/vikkushnir)
