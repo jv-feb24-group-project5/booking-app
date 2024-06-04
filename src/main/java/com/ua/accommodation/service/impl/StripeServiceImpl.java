@@ -92,6 +92,7 @@ public class StripeServiceImpl implements StripeService {
         if (session.getPaymentStatus().equals("paid")) {
             payment.setStatus(Payment.Status.PAID);
             paymentRepository.save(payment);
+            responseDto = paymentMapper.toDto(payment);
             Booking booking = bookingService.getBooking(payment.getBookingId());
             booking.setStatus(Booking.Status.CONFIRMED);
             bookingService.saveBooking(booking);
