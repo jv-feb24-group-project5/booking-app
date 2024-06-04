@@ -32,6 +32,13 @@ public class Role implements GrantedAuthority {
     @Column(nullable = false)
     private boolean isDeleted;
 
+    public Role(RoleName roleName) {
+        this.name = roleName;
+    }
+
+    public Role() {
+    }
+
     @Override
     public String getAuthority() {
         return ROLE + name.name();
