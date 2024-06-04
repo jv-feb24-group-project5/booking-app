@@ -92,7 +92,7 @@ public class StripeServiceImpl implements StripeService {
         return responseDto;
     }
 
-    @Scheduled(cron = "* * */1 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 0 */1 * * *", zone = "Europe/Kiev")
     public void checkExpiredSessions() {
         List<Payment> expiredPayments =
                 paymentRepository.findPaymentsByExpiresAtBefore(LocalDateTime.now());
