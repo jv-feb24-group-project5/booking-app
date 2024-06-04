@@ -1,9 +1,9 @@
 package com.ua.accommodation.controller;
 
-import com.ua.accommodation.dto.UserLoginRequestDto;
-import com.ua.accommodation.dto.UserLoginResponseDto;
-import com.ua.accommodation.dto.UserRegistrationRequestDto;
-import com.ua.accommodation.dto.UserRegistrationResponseDto;
+import com.ua.accommodation.dto.auth.UserLoginRequestDto;
+import com.ua.accommodation.dto.auth.UserLoginResponseDto;
+import com.ua.accommodation.dto.auth.UserRegistrationRequestDto;
+import com.ua.accommodation.dto.auth.UserRegistrationResponseDto;
 import com.ua.accommodation.exception.RegistrationException;
 import com.ua.accommodation.security.authentication.AuthenticationService;
 import com.ua.accommodation.security.registration.RegistrationService;

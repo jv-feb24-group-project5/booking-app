@@ -1,4 +1,4 @@
-package com.ua.accommodation.dto;
+package com.ua.accommodation.dto.auth;
 
 import lombok.Data;
 
