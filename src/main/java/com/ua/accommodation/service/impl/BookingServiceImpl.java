@@ -133,7 +133,7 @@ public class BookingServiceImpl implements BookingService {
                             + checkInDate + " to the " + checkOutDate);
         }
     }
-
+  
     @Scheduled(cron = "0 * 0 * * *", zone = "Europe/Kiev")
     private void sendExpiredBookingsNotification() {
         List<Booking> expiredBookings =
