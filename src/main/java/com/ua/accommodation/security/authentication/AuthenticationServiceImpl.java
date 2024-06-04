@@ -1,7 +1,7 @@
 package com.ua.accommodation.security.authentication;
 
-import com.ua.accommodation.dto.UserLoginRequestDto;
-import com.ua.accommodation.dto.UserLoginResponseDto;
+import com.ua.accommodation.dto.auth.UserLoginRequestDto;
+import com.ua.accommodation.dto.auth.UserLoginResponseDto;
 import com.ua.accommodation.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

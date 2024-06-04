@@ -1,4 +1,4 @@
-package com.ua.accommodation.dto;
+package com.ua.accommodation.dto.auth;
 
 import com.ua.accommodation.validation.FieldMatch;
 import jakarta.validation.constraints.NotBlank;
