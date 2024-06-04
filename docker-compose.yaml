@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   db:
-    platform: linux/arm64
+    platform: linux/amd64
     image: postgres
     restart: unless-stopped
     env_file: ./.env
@@ -38,6 +38,7 @@ services:
       JWT_EXPIRATION: ${JWT_EXPIRATION}
       JWT_SECRET: ${JWT_SECRET}
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_REDIRECT_URL: ${STRIPE_REDIRECT_URL}
       JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
     logging:
       driver: "json-file"
