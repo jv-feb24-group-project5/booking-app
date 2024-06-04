@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Payment Management System", description = "Operations pertaining to "
-        + "payments in the system")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/checkout")
@@ -30,7 +28,6 @@ public class PaymentController {
 
     @PostMapping("/payments")
     @ResponseBody
-
     @Operation(
             summary = "Create session",
             description = "You can create new session. You need to give bookingId, "
@@ -53,7 +50,7 @@ public class PaymentController {
     }
 
     @Operation(
-            summary = "Handle cansel payment operation.",
+            summary = "Handle cancel payment operation.",
             description = "When you press the \"Back\" button you "
                     + "will be redirected to this endpoint."
     )

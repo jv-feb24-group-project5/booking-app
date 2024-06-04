@@ -11,9 +11,11 @@ import com.stripe.param.checkout.SessionCreateParams;
 import com.ua.accommodation.dto.payment.PaymentRequestDto;
 import com.ua.accommodation.dto.payment.PaymentResponseDto;
 import com.ua.accommodation.mapper.PaymentMapper;
+import com.ua.accommodation.model.Booking;
 import com.ua.accommodation.model.Payment;
 import com.ua.accommodation.model.User;
 import com.ua.accommodation.repository.PaymentRepository;
+import com.ua.accommodation.service.BookingService;
 import com.ua.accommodation.service.StripeService;
 import com.ua.accommodation.service.event.NotificationEvent;
 import jakarta.annotation.PostConstruct;
@@ -37,6 +39,7 @@ public class StripeServiceImpl implements StripeService {
     private static final String CLIENT_URL = "/api/checkout/payments/";
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
+    private final BookingService bookingService;
     private final ApplicationEventPublisher eventPublisher;
     @Value("${stripe.secret.key}")
     private String stripeApiKey;
@@ -89,6 +92,10 @@ public class StripeServiceImpl implements StripeService {
         if (session.getPaymentStatus().equals("paid")) {
             payment.setStatus(Payment.Status.PAID);
             paymentRepository.save(payment);
+            responseDto = paymentMapper.toDto(payment);
+            Booking booking = bookingService.getBooking(payment.getBookingId());
+            booking.setStatus(Booking.Status.CONFIRMED);
+            bookingService.saveBooking(booking);
             responseDto.setMessage("Payment successful.");
             publishEvent(payment);
             return responseDto;

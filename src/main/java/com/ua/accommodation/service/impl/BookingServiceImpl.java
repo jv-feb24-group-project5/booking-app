@@ -110,10 +110,15 @@ public class BookingServiceImpl implements BookingService {
         return bookingMapper.toResponseDto(savedBooking);
     }
 
-    private Booking getBooking(Long bookingId) {
+    public Booking getBooking(Long bookingId) {
         return bookingRepository.findById(bookingId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find booking with id " + bookingId)
         );
+    }
+
+    @Override
+    public Booking saveBooking(Booking booking) {
+        return bookingRepository.save(booking);
     }
 
     private boolean isUserNotAdmin(Set<Role> roles) {
