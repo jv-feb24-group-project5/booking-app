@@ -15,20 +15,17 @@ import com.ua.accommodation.model.Payment;
 import com.ua.accommodation.model.User;
 import com.ua.accommodation.repository.PaymentRepository;
 import com.ua.accommodation.service.StripeService;
-import jakarta.annotation.PostConstruct;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import com.ua.accommodation.service.event.NotificationEvent;
 import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -98,12 +95,6 @@ public class StripeServiceImpl implements StripeService {
         }
         responseDto.setMessage("Payment paused, you can complete it later.");
         publishEvent(payment);
-        return responseDto;
-    }
-
-            return responseDto;
-        }
-        responseDto.setMessage("Payment paused, you can complete it later.");
         return responseDto;
     }
 
