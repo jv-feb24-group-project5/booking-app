@@ -3,6 +3,7 @@ package com.ua.accommodation.service.impl;
 import com.ua.accommodation.service.NotificationService;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -14,7 +15,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class TelegramNotificationService extends TelegramLongPollingBot
         implements NotificationService {
 
-    private final List<Long> chatIds = new ArrayList<>();
+    @Getter
+    private List<Long> chatIds = new ArrayList<>();
     private final String botUsername;
     private final String botToken;
     private final String groupId;
@@ -55,7 +57,7 @@ public class TelegramNotificationService extends TelegramLongPollingBot
         send(sendMessage);
     }
 
-    private void send(SendMessage message) {
+    protected void send(SendMessage message) {
         try {
             execute(message);
         } catch (TelegramApiException e) {
