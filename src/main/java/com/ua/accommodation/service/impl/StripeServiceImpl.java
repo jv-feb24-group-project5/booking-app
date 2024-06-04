@@ -15,12 +15,14 @@ import com.ua.accommodation.model.Payment;
 import com.ua.accommodation.model.User;
 import com.ua.accommodation.repository.PaymentRepository;
 import com.ua.accommodation.service.StripeService;
+import com.ua.accommodation.service.event.NotificationEvent;
 import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ public class StripeServiceImpl implements StripeService {
     private static final String CLIENT_URL = "/api/checkout/payments/";
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
+    private final ApplicationEventPublisher eventPublisher;
     @Value("${stripe.secret.key}")
     private String stripeApiKey;
     @Value("${stripe.redirect.url}")
@@ -62,6 +65,7 @@ public class StripeServiceImpl implements StripeService {
             paymentRepository.save(payment);
             PaymentResponseDto responseDto = paymentMapper.toDto(payment);
             responseDto.setMessage(" Awaiting payment. ");
+            publishEvent(payment);
             return responseDto;
         } catch (StripeException e) {
             log.error("Exception createPaymentSession", e);
@@ -84,9 +88,11 @@ public class StripeServiceImpl implements StripeService {
             payment.setStatus(Payment.Status.PAID);
             paymentRepository.save(payment);
             responseDto.setMessage("Payment successful.");
+            publishEvent(payment);
             return responseDto;
         }
         responseDto.setMessage("Payment paused, you can complete it later.");
+        publishEvent(payment);
         return responseDto;
     }
 
@@ -145,5 +151,22 @@ public class StripeServiceImpl implements StripeService {
             customer = search.getData().getFirst();
         }
         return customer;
+    }
+
+    private void publishEvent(Payment payment) {
+        String message = "Payment update!"
+                + System.lineSeparator()
+                + "Id: " + payment.getId()
+                + System.lineSeparator()
+                + "Booking id: " + payment.getBookingId()
+                + System.lineSeparator()
+                + "Amount to pay: " + payment.getAmountToPay()
+                + System.lineSeparator()
+                + "Created at: " + payment.getCreated()
+                + System.lineSeparator()
+                + "Expires at: " + payment.getExpiresAt();
+
+        NotificationEvent event = new NotificationEvent(this, message);
+        eventPublisher.publishEvent(event);
     }
 }
