@@ -72,7 +72,7 @@ public class BookingController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Operation(
             summary = "Get booking by id",
-            description = "Get specify booking by id"
+            description = "Get specific booking by id"
     )
     public BookingResponseDto getBookingById(
             @AuthenticationPrincipal User user,
@@ -87,7 +87,7 @@ public class BookingController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Operation(
             summary = "Update booking",
-            description = "Update specify booking by booking id. "
+            description = "Update specific booking by booking id. "
                     + "You can update checkInDate and CheckOutDate"
     )
     public BookingResponseDto updateBooking(
@@ -105,7 +105,7 @@ public class BookingController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Operation(
             summary = "Delete booking",
-            description = "Delete specify booking by bookingId"
+            description = "Delete specific booking by bookingId"
     )
     public BookingResponseDto deleteBooking(
             @AuthenticationPrincipal User user,

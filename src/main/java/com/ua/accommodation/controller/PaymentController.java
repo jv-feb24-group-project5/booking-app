@@ -39,7 +39,7 @@ public class PaymentController {
     @Operation(
             summary = "Retrieve session",
             description = "You can retrieve session by sessionId. "
-            + "In response you will see status for this session")
+            + "Returns status for this session")
     public PaymentResponseDto retrieveSession(@PathVariable String id) {
         return stripeService.retrieveSession(id);
     }
