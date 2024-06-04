@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/auth/**",
+                                        "/error",
                                         "/checkout/payments/cancel/**",
                                         "/checkout/payments/success/**",
                                         "/swagger-ui/**",

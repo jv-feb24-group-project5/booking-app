@@ -1,4 +1,4 @@
-package com.ua.accommodation.dto;
+package com.ua.accommodation.dto.payment;
 
 import java.math.BigDecimal;
 import java.util.Map;
