@@ -17,11 +17,13 @@ import com.ua.accommodation.repository.PaymentRepository;
 import com.ua.accommodation.service.StripeService;
 import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -92,6 +94,15 @@ public class StripeServiceImpl implements StripeService {
             return responseDto;
         }
         return null;
+    }
+
+    @Scheduled(cron = "* * */1 * * *", zone = "Europe/Kiev")
+    public void checkExpiredSessions() {
+        List<Payment> expiredPayments =
+                paymentRepository.findPaymentsByExpiresAtBefore(LocalDateTime.now());
+        expiredPayments.forEach(payment -> payment.setStatus(Payment.Status.EXPIRED));
+        paymentRepository.saveAll(expiredPayments);
+
     }
 
     public List<PaymentResponseDto> findPaymentsByUserId(Long userId, Pageable pageable) {

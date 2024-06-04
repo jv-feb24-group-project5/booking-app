@@ -46,6 +46,7 @@ public class Payment {
     private boolean isDeleted;
 
     public enum Status {
+        EXPIRED("expired"),
         PENDING("unpaid"),
         PAID("paid");
 
