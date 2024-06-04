@@ -4,11 +4,13 @@ import com.ua.accommodation.validation.FieldMatch;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
 @FieldMatch(field = "password",
         fieldMatch = "repeatPassword",
         message = "The password fields must match")
+@Accessors(chain = true)
 public class UserRegistrationRequestDto {
     @NotBlank
     private String email;
