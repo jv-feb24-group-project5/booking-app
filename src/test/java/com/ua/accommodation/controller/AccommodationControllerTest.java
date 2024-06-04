@@ -65,7 +65,8 @@ class AccommodationControllerTest {
     void addAccommodation_ValidRequest_ReturnsCreatedAccommodation() throws Exception {
         CreateAccommodationRequestDto requestDto = createRequestDto();
         AccommodationDto responseDto = createResponseDto();
-        given(accommodationService.create(any(CreateAccommodationRequestDto.class))).willReturn(responseDto);
+        given(accommodationService.create(any(CreateAccommodationRequestDto.class)))
+                .willReturn(responseDto);
 
         mockMvc.perform(post("/accommodations")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -108,7 +109,9 @@ class AccommodationControllerTest {
         Long id = 1L;
         CreateAccommodationRequestDto requestDto = createRequestDto();
         AccommodationDto responseDto = createResponseDto();
-        given(accommodationService.updateAccommodation(eq(id), any(CreateAccommodationRequestDto.class))).willReturn(responseDto);
+        given(accommodationService.updateAccommodation(eq(id),
+                any(CreateAccommodationRequestDto.class)))
+                .willReturn(responseDto);
 
         mockMvc.perform(put("/accommodations/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -123,7 +126,9 @@ class AccommodationControllerTest {
         Long id = 1L;
         CreateAccommodationRequestDto requestDto = createRequestDto();
         AccommodationDto responseDto = createResponseDto();
-        given(accommodationService.patchAccommodation(eq(id), any(CreateAccommodationRequestDto.class))).willReturn(responseDto);
+        given(accommodationService.patchAccommodation(eq(id),
+                any(CreateAccommodationRequestDto.class)))
+                .willReturn(responseDto);
 
         mockMvc.perform(patch("/accommodations/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -166,8 +171,9 @@ class AccommodationControllerTest {
     }
 
     private Set<CreateAmenityRequestDto> createAmenityRequestDto() {
-        Set<CreateAmenityRequestDto> amenities = Set.of(new CreateAmenityRequestDto("Test amenity 1"),
-                new CreateAmenityRequestDto("Test amenity 2"));
+        Set<CreateAmenityRequestDto> amenities =
+                Set.of(new CreateAmenityRequestDto("Test amenity 1"),
+                        new CreateAmenityRequestDto("Test amenity 2"));
         return amenities;
 
     }
