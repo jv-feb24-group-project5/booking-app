@@ -3,10 +3,7 @@ package com.ua.accommodation.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.ua.accommodation.dto.accommodation.AccommodationDto;
 import com.ua.accommodation.dto.accommodation.CreateAccommodationRequestDto;
@@ -25,7 +22,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -83,10 +79,6 @@ class AccommodationServiceImplTest {
                 accommodation.getSize(), Set.of(new AmenityDto(1L, "name")),
                 accommodation.getDailyRate(), accommodation.getAvailability()
         );
-    }
-
-    @AfterEach
-    void tearDown() {
     }
 
     @Test
