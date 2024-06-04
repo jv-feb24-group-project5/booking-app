@@ -1,8 +1,8 @@
 package com.ua.accommodation.mapper;
 
 import com.ua.accommodation.config.MapperConfig;
-import com.ua.accommodation.dto.UserRegistrationRequestDto;
-import com.ua.accommodation.dto.UserRegistrationResponseDto;
+import com.ua.accommodation.dto.auth.UserRegistrationRequestDto;
+import com.ua.accommodation.dto.auth.UserRegistrationResponseDto;
 import com.ua.accommodation.dto.user.UserResponseDto;
 import com.ua.accommodation.model.Role;
 import com.ua.accommodation.model.User;
