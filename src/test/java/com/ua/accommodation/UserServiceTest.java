@@ -1,6 +1,12 @@
 package com.ua.accommodation;
 
 import static com.ua.accommodation.model.Role.RoleName;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.ua.accommodation.dto.user.UserResponseDto;
 import com.ua.accommodation.dto.user.UserUpdateProfileDto;
@@ -8,11 +14,11 @@ import com.ua.accommodation.dto.user.UserUpdateRoleDto;
 import com.ua.accommodation.mapper.UserMapper;
 import com.ua.accommodation.model.Role;
 import com.ua.accommodation.model.User;
-import com.ua.accommodation.repository.RoleRepository;
 import com.ua.accommodation.repository.UserRepository;
 import com.ua.accommodation.service.impl.UserServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,12 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -91,11 +91,11 @@ public class UserServiceTest {
         userResponseDto.setRoles(roleNames);
 
         userUpdateRoleDto = new UserUpdateRoleDto();
-        Set<Role> role = new HashSet<>();
         Role roleUser = new Role();
         roleUser.setId(2L);
         roleUser.setName(RoleName.USER);
         roleUser.setDeleted(false);
+        Set<Role> role = new HashSet<>();
         role.add(roleUser);
         userUpdateRoleDto.setRoles(role);
 
