@@ -31,6 +31,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,6 +47,8 @@ class AccommodationServiceImplTest {
     private AmenityRepository amenityRepository;
     @Mock
     private AccommodationMapper accommodationMapper;
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
 
     private CreateAddressRequestDto createAddressRequestDto;
     private Set<CreateAmenityRequestDto> createAmenityRequestDtoSet;
