@@ -158,7 +158,7 @@ class AccommodationServiceImplTest {
 
     @Test
     @DisplayName("Patch accommodation should save and return the updated accommodation")
-    void patchAccommodation_ShouldSaveAndReturnUpdatedAccommodation() {
+    void patchAccommodation_ReturnsUpdatedAccommodation() {
         when(accommodationRepository.findByIdWithAddressAndAmenities(accommodation.getId()))
                 .thenReturn(Optional.of(accommodation));
         when(accommodationRepository.save(any(Accommodation.class)))
