@@ -159,7 +159,7 @@ public class BookingServiceImpl implements BookingService {
         return expiredBookings.stream()
                 .map(b -> getBookingIdAsMessage(b.getId()))
                 .collect(Collectors.joining(
-                                System.lineSeparator() + System.lineSeparator()
+                        System.lineSeparator() + System.lineSeparator()
                 ))
                 + "Status: "
                 + Status.EXPIRED
@@ -173,9 +173,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private String getBookingAsMessage(Booking booking) {
-        return "Booking ID: "
-                + booking.getId()
-                + System.lineSeparator()
+        return getBookingIdAsMessage(booking.getId())
                 + "User ID: "
                 + booking.getUserId()
                 + System.lineSeparator()
