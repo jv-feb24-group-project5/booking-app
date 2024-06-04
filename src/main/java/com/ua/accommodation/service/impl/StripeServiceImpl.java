@@ -18,12 +18,14 @@ import com.ua.accommodation.service.StripeService;
 import com.ua.accommodation.service.event.NotificationEvent;
 import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -94,6 +96,15 @@ public class StripeServiceImpl implements StripeService {
         responseDto.setMessage("Payment paused, you can complete it later.");
         publishEvent(payment);
         return responseDto;
+    }
+
+    @Scheduled(cron = "0 0 */1 * * *", zone = "Europe/Kiev")
+    public void checkExpiredSessions() {
+        List<Payment> expiredPayments =
+                paymentRepository.findPaymentsByExpiresAtBefore(LocalDateTime.now());
+        expiredPayments.forEach(payment -> payment.setStatus(Payment.Status.EXPIRED));
+        paymentRepository.saveAll(expiredPayments);
+
     }
 
     public List<PaymentResponseDto> findPaymentsByUserId(Long userId, Pageable pageable) {
