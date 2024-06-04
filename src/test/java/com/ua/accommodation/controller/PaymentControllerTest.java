@@ -105,7 +105,8 @@ class PaymentControllerTest {
     void findPayments_ExistingUserId_ReturnsPageOfAllUserPayments() throws Exception {
         Long userId = 1L;
         List<PaymentResponseDto> paymentsList = Collections.singletonList(new PaymentResponseDto());
-        given(stripeService.findPaymentsByUserId(eq(userId), any(Pageable.class))).willReturn(paymentsList);
+        given(stripeService.findPaymentsByUserId(eq(userId),
+                any(Pageable.class))).willReturn(paymentsList);
 
         mockMvc.perform(get("/checkout/payments")
                         .param("userId", String.valueOf(userId))
