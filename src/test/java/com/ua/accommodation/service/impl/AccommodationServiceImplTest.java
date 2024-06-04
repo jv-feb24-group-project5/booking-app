@@ -137,7 +137,7 @@ class AccommodationServiceImplTest {
 
     @Test
     @DisplayName("Update accommodation should save and return the updated accommodation")
-    void updateAccommodation_ShouldSaveAndReturnUpdatedAccommodation() {
+    void updateAccommodation_ReturnsUpdatedAccommodation() {
         when(accommodationRepository.findByIdWithAddressAndAmenities(accommodation.getId()))
                 .thenReturn(Optional.of(accommodation));
         when(accommodationMapper.toModel(createAccommodationRequestDto))
