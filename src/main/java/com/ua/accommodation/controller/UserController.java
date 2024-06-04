@@ -40,7 +40,7 @@ public class UserController {
     @Operation(
             summary = "Update roles",
             description = "Update roles for user by user id. Available only for admins. "
-            + "You need make request with Set roles. Don't forget about id")
+                    + "You need make request with Set roles. Don't forget about id")
     public UserResponseDto updateRoles(
             @PathVariable Long id,
             @RequestBody @Valid UserUpdateRoleDto updateRoleDto) {
@@ -52,8 +52,8 @@ public class UserController {
     @Operation(
             summary = "Update profile",
             description = "You can update personal info about user. "
-            + "You need give all fields in request. "
-            + "If you don't wanna change something just give old value")
+                    + "You need give all fields in request. "
+                    + "If you don't wanna change something just give old value")
     public UserResponseDto updateProfile(
             @AuthenticationPrincipal User user,
             @RequestBody @Valid UserUpdateProfileDto updateProfileDto) {
