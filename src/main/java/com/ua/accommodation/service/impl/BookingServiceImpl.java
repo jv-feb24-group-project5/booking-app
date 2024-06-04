@@ -133,7 +133,7 @@ public class BookingServiceImpl implements BookingService {
                             + checkInDate + " to the " + checkOutDate);
         }
     }
-  
+
     @Scheduled(cron = "0 * 0 * * *", zone = "Europe/Kiev")
     private void sendExpiredBookingsNotification() {
         List<Booking> expiredBookings =
@@ -146,7 +146,7 @@ public class BookingServiceImpl implements BookingService {
         } else {
             expiredBookings.forEach(b -> b.setStatus(Status.EXPIRED));
             bookingRepository.saveAll(expiredBookings);
-            publishEvent(getListOfBookingsAsMessage(expiredBookings));
+            publishEvent(getListOfExpiredBookingsAsMessage(expiredBookings));
         }
     }
 
@@ -155,10 +155,21 @@ public class BookingServiceImpl implements BookingService {
         eventPublisher.publishEvent(event);
     }
 
-    private String getListOfBookingsAsMessage(List<Booking> bookingList) {
-        return bookingList.stream()
-                .map(this::getBookingAsMessage)
-                .collect(Collectors.joining(System.lineSeparator() + System.lineSeparator()));
+    private String getListOfExpiredBookingsAsMessage(List<Booking> expiredBookings) {
+        return expiredBookings.stream()
+                .map(b -> getBookingIdAsMessage(b.getId()))
+                .collect(Collectors.joining(
+                                System.lineSeparator() + System.lineSeparator()
+                ))
+                + "Status: "
+                + Status.EXPIRED
+                + System.lineSeparator();
+    }
+
+    private String getBookingIdAsMessage(Long id) {
+        return "Booking ID: "
+                + id
+                + System.lineSeparator();
     }
 
     private String getBookingAsMessage(Booking booking) {
