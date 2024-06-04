@@ -3,6 +3,7 @@ package com.ua.accommodation.service;
 import com.ua.accommodation.dto.booking.BookingRequestDto;
 import com.ua.accommodation.dto.booking.BookingResponseDto;
 import com.ua.accommodation.dto.booking.BookingUpdateDto;
+import com.ua.accommodation.model.Booking;
 import com.ua.accommodation.model.Booking.Status;
 import com.ua.accommodation.model.Role;
 import java.util.List;
@@ -27,4 +28,8 @@ public interface BookingService {
             BookingUpdateDto updateDto);
 
     BookingResponseDto deleteBookingById(Long userId, Set<Role> roles, Long bookingId);
+
+    Booking getBooking(Long bookingId);
+
+    Booking saveBooking(Booking booking);
 }
