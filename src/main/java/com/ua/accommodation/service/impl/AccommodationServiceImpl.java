@@ -125,24 +125,24 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     private void publishEvent(Accommodation accommodation) {
-        String message = "Accommodation update!" +
-                System.lineSeparator() +
-                "Id: " + accommodation.getId() +
-                System.lineSeparator() +
-                "Type: " + accommodation.getType() +
-                System.lineSeparator() +
-                "Size: " + accommodation.getSize() +
-                System.lineSeparator() +
-                "Location: " + accommodation.getLocation().toString() +
-                System.lineSeparator() +
-                "Daily rate: " + accommodation.getDailyRate() + "$" +
-                System.lineSeparator() +
-                "Amenities: " +
-                accommodation.getAmenities().stream()
+        String message = "Accommodation update!"
+                + System.lineSeparator()
+                + "Id: " + accommodation.getId()
+                + System.lineSeparator()
+                + "Type: " + accommodation.getType()
+                + System.lineSeparator()
+                + "Size: " + accommodation.getSize()
+                + System.lineSeparator()
+                + "Location: " + accommodation.getLocation().toString()
+                + System.lineSeparator()
+                + "Daily rate: " + accommodation.getDailyRate() + "$"
+                + System.lineSeparator()
+                + "Amenities: "
+                + accommodation.getAmenities().stream()
                         .map(Amenity::getName)
-                        .collect(Collectors.joining(", ")) +
-                System.lineSeparator() +
-                "Sleep units: " + accommodation.getAvailability();
+                        .collect(Collectors.joining(", "))
+                + System.lineSeparator()
+                + "Sleep units: " + accommodation.getAvailability();
         NotificationEvent event = new NotificationEvent(this, message);
         eventPublisher.publishEvent(event);
     }

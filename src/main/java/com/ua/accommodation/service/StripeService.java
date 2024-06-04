@@ -149,17 +149,17 @@ public class StripeService {
     }
 
     private void publishEvent(Payment payment) {
-        String message = "Payment update!" +
-                System.lineSeparator() +
-                "Id: " + payment.getId() +
-                System.lineSeparator() +
-                "Booking id: " + payment.getBookingId() +
-                System.lineSeparator() +
-                "Amount to pay: " + payment.getAmountToPay() +
-                System.lineSeparator() +
-                "Created at: " + payment.getCreated() +
-                System.lineSeparator() +
-                "Expires at: " + payment.getExpiresAt();
+        String message = "Payment update!"
+                + System.lineSeparator()
+                + "Id: " + payment.getId()
+                + System.lineSeparator()
+                + "Booking id: " + payment.getBookingId()
+                + System.lineSeparator()
+                + "Amount to pay: " + payment.getAmountToPay()
+                + System.lineSeparator()
+                + "Created at: " + payment.getCreated()
+                + System.lineSeparator()
+                + "Expires at: " + payment.getExpiresAt();
 
         NotificationEvent event = new NotificationEvent(this, message);
         eventPublisher.publishEvent(event);
