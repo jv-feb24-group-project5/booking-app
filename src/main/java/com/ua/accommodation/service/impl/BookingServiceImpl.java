@@ -8,6 +8,7 @@ import com.ua.accommodation.mapper.BookingMapper;
 import com.ua.accommodation.model.Booking;
 import com.ua.accommodation.model.Booking.Status;
 import com.ua.accommodation.model.Role;
+import com.ua.accommodation.repository.AccommodationRepository;
 import com.ua.accommodation.repository.BookingRepository;
 import com.ua.accommodation.service.BookingService;
 import com.ua.accommodation.service.event.NotificationEvent;
@@ -28,14 +29,20 @@ import org.springframework.stereotype.Service;
 public class BookingServiceImpl implements BookingService {
     private final BookingMapper bookingMapper;
     private final BookingRepository bookingRepository;
+    private final AccommodationRepository accommodationRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public BookingResponseDto createBooking(Long userId, BookingRequestDto requestDto) {
+        Long accommodationId = requestDto.getAccommodationID();
+        if (!accommodationRepository.existsById(accommodationId)) {
+            throw new EntityNotFoundException(
+                    "Can't find accommodation with id " + accommodationId);
+        }
         checkAccommodationAvailability(
                 requestDto.getCheckInDate(),
                 requestDto.getCheckOutDate(),
-                requestDto.getAccommodationID());
+                accommodationId);
         Booking newBooking = bookingMapper.toEntity(requestDto);
         newBooking.setUserId(userId);
         newBooking.setStatus(Status.PENDING);
