@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -86,7 +85,7 @@ class AccommodationServiceImplTest {
 
     @Test
     @DisplayName("Create Accommodation with valid data should return valid accommodation")
-    void createWithValidDataShouldReturnValidDto() {
+    void create_WithValidData_ShouldReturnValidDto() {
         when(accommodationMapper.toModel(createAccommodationRequestDto))
                 .thenReturn(accommodation);
         when(accommodationRepository.save(any(Accommodation.class)))
@@ -98,12 +97,12 @@ class AccommodationServiceImplTest {
 
         assertNotNull(result);
         assertEquals(accommodationDto, result);
-        verify(accommodationRepository, times(1)).save(any(Accommodation.class));
+        verify(accommodationRepository).save(any(Accommodation.class));
     }
 
     @Test
     @DisplayName("Get all accommodations should return a list of accommodations")
-    void getAllAccommodationsShouldReturnListOfAccommodations() {
+    void getAllAccommodations_ShouldReturnListOfAccommodations() {
         List<Accommodation> accommodations = List.of(accommodation, new Accommodation());
         when(accommodationRepository.findAllWithAddressAndAmenities(any(PageRequest.class)))
                 .thenReturn(accommodations);
@@ -116,13 +115,13 @@ class AccommodationServiceImplTest {
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(accommodationRepository, times(1))
+        verify(accommodationRepository)
                 .findAllWithAddressAndAmenities(any(PageRequest.class));
     }
 
     @Test
     @DisplayName("Get accommodation by ID should return the accommodation")
-    void getAccommodationByIdShouldReturnAccommodation() {
+    void getAccommodationById_ShouldReturnAccommodation() {
         when(accommodationRepository.findByIdWithAddressAndAmenities(accommodation.getId()))
                 .thenReturn(Optional.of(accommodation));
         when(accommodationMapper.toDto(any(Accommodation.class)))
@@ -132,13 +131,13 @@ class AccommodationServiceImplTest {
 
         assertNotNull(result);
         assertEquals(accommodationDto, result);
-        verify(accommodationRepository, times(1))
+        verify(accommodationRepository)
                 .findByIdWithAddressAndAmenities(accommodation.getId());
     }
 
     @Test
     @DisplayName("Update accommodation should save and return the updated accommodation")
-    void updateAccommodationShouldSaveAndReturnUpdatedAccommodation() {
+    void updateAccommodation_ShouldSaveAndReturnUpdatedAccommodation() {
         when(accommodationRepository.findByIdWithAddressAndAmenities(accommodation.getId()))
                 .thenReturn(Optional.of(accommodation));
         when(accommodationMapper.toModel(createAccommodationRequestDto))
@@ -154,12 +153,12 @@ class AccommodationServiceImplTest {
 
         assertNotNull(result);
         assertEquals(accommodationDto, result);
-        verify(accommodationRepository, times(1)).save(any(Accommodation.class));
+        verify(accommodationRepository).save(any(Accommodation.class));
     }
 
     @Test
     @DisplayName("Patch accommodation should save and return the updated accommodation")
-    void patchAccommodationShouldSaveAndReturnUpdatedAccommodation() {
+    void patchAccommodation_ShouldSaveAndReturnUpdatedAccommodation() {
         when(accommodationRepository.findByIdWithAddressAndAmenities(accommodation.getId()))
                 .thenReturn(Optional.of(accommodation));
         when(accommodationRepository.save(any(Accommodation.class)))
@@ -173,12 +172,12 @@ class AccommodationServiceImplTest {
 
         assertNotNull(result);
         assertEquals(accommodationDto, result);
-        verify(accommodationRepository, times(1)).save(any(Accommodation.class));
+        verify(accommodationRepository).save(any(Accommodation.class));
     }
 
     @Test
     @DisplayName("Delete accommodation should remove the accommodation")
-    void deleteAccommodationShouldRemoveAccommodation() {
+    void deleteAccommodation_ShouldRemoveAccommodation() {
         when(accommodationRepository.existsById(accommodation.getId()))
                 .thenReturn(true);
         doNothing().when(accommodationRepository)
@@ -186,7 +185,6 @@ class AccommodationServiceImplTest {
 
         accommodationService.deleteAccommodation(accommodation.getId());
 
-        verify(accommodationRepository, times(1))
-                .deleteById(accommodation.getId());
+        verify(accommodationRepository).deleteById(accommodation.getId());
     }
 }
