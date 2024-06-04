@@ -17,6 +17,7 @@ import com.ua.accommodation.model.Booking;
 import com.ua.accommodation.model.Booking.Status;
 import com.ua.accommodation.model.Role;
 import com.ua.accommodation.model.Role.RoleName;
+import com.ua.accommodation.repository.AccommodationRepository;
 import com.ua.accommodation.repository.BookingRepository;
 import com.ua.accommodation.service.event.NotificationEvent;
 import jakarta.persistence.EntityNotFoundException;
@@ -42,6 +43,9 @@ public class BookingServiceImplTest {
 
     @Mock
     private BookingMapper bookingMapper;
+
+    @Mock
+    private AccommodationRepository accommodationRepository;
 
     @Mock
     private BookingRepository bookingRepository;
@@ -108,6 +112,7 @@ public class BookingServiceImplTest {
         when(bookingMapper.toEntity(requestDto)).thenReturn(booking);
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
         when(bookingMapper.toResponseDto(booking)).thenReturn(responseDto);
+        when(accommodationRepository.existsById(accommodationId)).thenReturn(true);
 
         BookingResponseDto actual = bookingService.createBooking(userId, requestDto);
 
@@ -117,10 +122,11 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    @DisplayName("When accommodation s unavailable createBooking throws exception")
+    @DisplayName("When accommodation is unavailable createBooking throws exception")
     void createBooking_AccommodationUnavailable_ThrowsException() {
         BookingRequestDto requestDto = createBookingRequestDto();
 
+        when(accommodationRepository.existsById(accommodationId)).thenReturn(true);
         when(bookingRepository.countConflictingBookings(
                 anyLong(),
                 any(LocalDate.class),
