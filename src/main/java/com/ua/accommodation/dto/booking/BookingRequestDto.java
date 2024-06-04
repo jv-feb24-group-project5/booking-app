@@ -20,6 +20,6 @@ public class BookingRequestDto {
     @NotNull
     private LocalDate checkOutDate;
     @NotNull
-    @Min(0)
+    @Min(1)
     private Long accommodationID;
 }
