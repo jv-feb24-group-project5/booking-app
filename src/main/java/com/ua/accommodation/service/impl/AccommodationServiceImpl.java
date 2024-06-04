@@ -65,9 +65,9 @@ public class AccommodationServiceImpl implements AccommodationService {
         model.setId(id);
         mergeExistingAmenities(model);
         mergeExistingAddress(model);
-        accommodationRepository.save(model);
-        publishEvent(model);
-        return accommodationMapper.toDto(model);
+        Accommodation saved = accommodationRepository.save(model);
+        publishEvent(saved);
+        return accommodationMapper.toDto(saved);
     }
 
     @Override

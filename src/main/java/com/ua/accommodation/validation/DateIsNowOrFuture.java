@@ -12,10 +12,12 @@ import java.lang.annotation.Target;
         ElementType.FIELD,
         ElementType.METHOD,
         ElementType.PARAMETER,
-        ElementType.ANNOTATION_TYPE })
+        ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DateIsNowOrFuture {
     String message() default "date must be present or in the future";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

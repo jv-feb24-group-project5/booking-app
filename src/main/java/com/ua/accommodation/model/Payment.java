@@ -48,7 +48,7 @@ public class Payment {
     public enum Status {
         EXPIRED("expired"),
         PENDING("unpaid"),
-        PAID("paid"), CANCELED("canceled");
+        PAID("paid");
 
         private final String label;
 

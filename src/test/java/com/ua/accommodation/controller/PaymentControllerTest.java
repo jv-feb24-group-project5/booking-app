@@ -78,7 +78,7 @@ class PaymentControllerTest {
     void handleCancel_ExistingSessionId_SetCancelPaymentStatus() throws Exception {
         String sessionId = SESSION_ID;
         PaymentResponseDto responseDto = new PaymentResponseDto();
-        responseDto.setStatus(Payment.Status.CANCELED);
+        responseDto.setStatus(Payment.Status.EXPIRED);
         given(stripeService.retrieveSession(sessionId)).willReturn(responseDto);
 
         mockMvc.perform(get("/checkout/payments/cancel")

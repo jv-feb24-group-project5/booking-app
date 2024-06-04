@@ -36,16 +36,16 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/auth/**",
-                                        "/error",
-                                        "/checkout/payments/cancel/**",
-                                        "/checkout/payments/success/**",
-                                        "/swagger-ui/**",
-                                        "/v3/api-docs/**",
-                                        "/actuator/**")
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated()
+                        .requestMatchers("/auth/**",
+                                "/error",
+                                "/checkout/payments/cancel/**",
+                                "/checkout/payments/success/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/actuator/**")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
                 )
                 .httpBasic(withDefaults())
                 .sessionManagement(session ->
