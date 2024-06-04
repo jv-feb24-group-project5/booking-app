@@ -15,9 +15,11 @@ import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +40,7 @@ public class BookingServiceImpl implements BookingService {
         newBooking.setUserId(userId);
         newBooking.setStatus(Status.PENDING);
         Booking savedBooking = bookingRepository.save(newBooking);
-        publishEvent(getBookingAsMessage(savedBooking));
+        publishEvent(savedBooking);
         return bookingMapper.toResponseDto(savedBooking);
     }
 
@@ -85,7 +87,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setCheckInDate(updateDto.getCheckInDate());
         booking.setCheckOutDate((updateDto.getCheckOutDate()));
         Booking savedBooking = bookingRepository.save(booking);
-        publishEvent(getBookingAsMessage(savedBooking));
+        publishEvent(savedBooking);
         return bookingMapper.toResponseDto(savedBooking);
     }
 
@@ -139,13 +141,16 @@ public class BookingServiceImpl implements BookingService {
                         LocalDate.now()
                 );
         if (expiredBookings.isEmpty()) {
-            publishEvent("No expired bookings today");
+            eventPublisher.publishEvent(new NotificationEvent(this,
+                    "No expired bookings today"));
         } else {
             expiredBookings.forEach(b -> b.setStatus(Status.EXPIRED));
             bookingRepository.saveAll(expiredBookings);
-            publishEvent(getListOfExpiredBookingsAsMessage(expiredBookings));
+            eventPublisher.publishEvent(new NotificationEvent(this,
+                    getListOfExpiredBookingsAsMessage(expiredBookings)));
         }
     }
+
     private void publishEvent(Booking booking) {
         String message = "Booking update!" +
                 System.lineSeparator() +
@@ -182,22 +187,4 @@ public class BookingServiceImpl implements BookingService {
                 + System.lineSeparator();
     }
 
-    private String getBookingAsMessage(Booking booking) {
-        return getBookingIdAsMessage(booking.getId())
-                + "User ID: "
-                + booking.getUserId()
-                + System.lineSeparator()
-                + "Accommodation ID: "
-                + booking.getAccommodationID()
-                + System.lineSeparator()
-                + "Check out date: "
-                + booking.getCheckOutDate()
-                + System.lineSeparator()
-                + "Check in date: "
-                + booking.getCheckInDate()
-                + System.lineSeparator()
-                + "Status: "
-                + booking.getStatus()
-                + System.lineSeparator();
-    }
 }
