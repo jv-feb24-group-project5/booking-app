@@ -14,10 +14,13 @@ import com.ua.accommodation.service.event.NotificationEvent;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +41,7 @@ public class BookingServiceImpl implements BookingService {
         newBooking.setUserId(userId);
         newBooking.setStatus(Status.PENDING);
         Booking savedBooking = bookingRepository.save(newBooking);
-        publishEvent(savedBooking);
+        publishEvent(getBookingAsMessage(savedBooking));
         return bookingMapper.toResponseDto(savedBooking);
     }
 
@@ -85,7 +88,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setCheckInDate(updateDto.getCheckInDate());
         booking.setCheckOutDate((updateDto.getCheckOutDate()));
         Booking savedBooking = bookingRepository.save(booking);
-        publishEvent(savedBooking);
+        publishEvent(getBookingAsMessage(savedBooking));
         return bookingMapper.toResponseDto(savedBooking);
     }
 
@@ -97,7 +100,7 @@ public class BookingServiceImpl implements BookingService {
         }
         booking.setStatus(Status.CANCELED);
         Booking savedBooking = bookingRepository.save(booking);
-        publishEvent(savedBooking);
+        publishEvent(getBookingAsMessage(savedBooking));
         return bookingMapper.toResponseDto(savedBooking);
     }
 
@@ -112,7 +115,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void checkUserOwnershipOfBooking(Long userId, Booking booking) {
-        if (booking.getUserId() != userId) {
+        if (!Objects.equals(booking.getUserId(), userId)) {
             throw new AccessDeniedException(
                     "User does not have permission to manage this booking");
         }
@@ -131,24 +134,60 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private void publishEvent(Booking booking) {
-        StringBuilder builder = new StringBuilder();
-        String message = builder.append("Booking update!")
-                .append(System.lineSeparator())
-                .append("Id: ").append(booking.getId())
-                .append(System.lineSeparator())
-                .append("User id: ").append(booking.getUserId())
-                .append(System.lineSeparator())
-                .append("Accommodation id: ").append(booking.getAccommodationID())
-                .append(System.lineSeparator())
-                .append("Status: ").append(booking.getStatus())
-                .append(System.lineSeparator())
-                .append("Check in date: ").append(booking.getCheckInDate())
-                .append(System.lineSeparator())
-                .append("Check out date: ").append(booking.getCheckOutDate())
-                .toString();
+    @Scheduled(cron = "0 * 0 * * *", zone = "Europe/Kiev")
+    private void sendExpiredBookingsNotification() {
+        List<Booking> expiredBookings =
+                bookingRepository.findBookingByStatusInAndCheckOutDateBefore(
+                        Set.of(Status.CONFIRMED, Status.PENDING),
+                        LocalDate.now()
+                );
+        if (expiredBookings.isEmpty()) {
+            publishEvent("No expired bookings today");
+        } else {
+            expiredBookings.forEach(b -> b.setStatus(Status.EXPIRED));
+            bookingRepository.saveAll(expiredBookings);
+            publishEvent(getListOfExpiredBookingsAsMessage(expiredBookings));
+        }
+    }
 
+    private void publishEvent(String message) {
         NotificationEvent event = new NotificationEvent(this, message);
         eventPublisher.publishEvent(event);
+    }
+
+    private String getListOfExpiredBookingsAsMessage(List<Booking> expiredBookings) {
+        return expiredBookings.stream()
+                .map(b -> getBookingIdAsMessage(b.getId()))
+                .collect(Collectors.joining(
+                        System.lineSeparator() + System.lineSeparator()
+                ))
+                + "Status: "
+                + Status.EXPIRED
+                + System.lineSeparator();
+    }
+
+    private String getBookingIdAsMessage(Long id) {
+        return "Booking ID: "
+                + id
+                + System.lineSeparator();
+    }
+
+    private String getBookingAsMessage(Booking booking) {
+        return getBookingIdAsMessage(booking.getId())
+                + "User ID: "
+                + booking.getUserId()
+                + System.lineSeparator()
+                + "Accommodation ID: "
+                + booking.getAccommodationID()
+                + System.lineSeparator()
+                + "Check out date: "
+                + booking.getCheckOutDate()
+                + System.lineSeparator()
+                + "Check in date: "
+                + booking.getCheckInDate()
+                + System.lineSeparator()
+                + "Status: "
+                + booking.getStatus()
+                + System.lineSeparator();
     }
 }
