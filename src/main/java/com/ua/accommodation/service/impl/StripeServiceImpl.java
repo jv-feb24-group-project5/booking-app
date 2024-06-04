@@ -79,19 +79,15 @@ public class StripeServiceImpl implements StripeService {
         Payment payment = paymentRepository.findBySessionId(id).orElseThrow(
                 () -> new RuntimeException("Some troubles with payment.")
         );
+        PaymentResponseDto responseDto = paymentMapper.toDto(payment);
         if (session.getPaymentStatus().equals("paid")) {
             payment.setStatus(Payment.Status.PAID);
             paymentRepository.save(payment);
-            PaymentResponseDto responseDto = paymentMapper.toDto(payment);
             responseDto.setMessage("Payment successful.");
             return responseDto;
         }
-        if (session.getPaymentStatus().equals("unpaid")) {
-            PaymentResponseDto responseDto = paymentMapper.toDto(payment);
-            responseDto.setMessage("Payment paused, you can complete it later.");
-            return responseDto;
-        }
-        return null;
+        responseDto.setMessage("Payment paused, you can complete it later.");
+        return responseDto;
     }
 
     public List<PaymentResponseDto> findPaymentsByUserId(Long userId, Pageable pageable) {

@@ -1,15 +1,14 @@
 databaseChangeLog:
   - changeSet:
       id: create-booking-table
-      author: Molchanov O
+      author: samoilenko
       changes:
         - createTable:
             tableName: bookings
             columns:
               - column:
                   name: id
-                  type: BIGINT
-                  autoIncrement: true
+                  type: BIGSERIAL
                   constraints:
                     primaryKey: true
               - column:
@@ -40,6 +39,6 @@ databaseChangeLog:
               - column:
                   name: is_deleted
                   type: BOOLEAN
-                  defaultValueBoolean: false
+                  defaultValue: false
                   constraints:
                     nullable: false
