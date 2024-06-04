@@ -125,26 +125,24 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     private void publishEvent(Accommodation accommodation) {
-        StringBuilder builder = new StringBuilder();
-        String message = builder.append("Accommodation update!")
-                .append(System.lineSeparator())
-                .append("Id: ").append(accommodation.getId())
-                .append(System.lineSeparator())
-                .append("Type: ").append(accommodation.getType())
-                .append(System.lineSeparator())
-                .append("Size: ").append(accommodation.getSize())
-                .append(System.lineSeparator())
-                .append("Location: ").append(accommodation.getLocation().toString())
-                .append(System.lineSeparator())
-                .append("Daily rate: ").append(accommodation.getDailyRate()).append("$")
-                .append(System.lineSeparator())
-                .append("Amenities: ").append(
-                        accommodation.getAmenities().stream()
-                                .map(Amenity::getName)
-                                .collect(Collectors.joining(", "))
-                ).append(System.lineSeparator())
-                .append("Sleep units: ").append(accommodation.getAvailability())
-                .toString();
+        String message = "Accommodation update!" +
+                System.lineSeparator() +
+                "Id: " + accommodation.getId() +
+                System.lineSeparator() +
+                "Type: " + accommodation.getType() +
+                System.lineSeparator() +
+                "Size: " + accommodation.getSize() +
+                System.lineSeparator() +
+                "Location: " + accommodation.getLocation().toString() +
+                System.lineSeparator() +
+                "Daily rate: " + accommodation.getDailyRate() + "$" +
+                System.lineSeparator() +
+                "Amenities: " +
+                accommodation.getAmenities().stream()
+                        .map(Amenity::getName)
+                        .collect(Collectors.joining(", ")) +
+                System.lineSeparator() +
+                "Sleep units: " + accommodation.getAvailability();
         NotificationEvent event = new NotificationEvent(this, message);
         eventPublisher.publishEvent(event);
     }

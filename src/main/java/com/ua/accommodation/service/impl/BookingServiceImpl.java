@@ -132,21 +132,19 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void publishEvent(Booking booking) {
-        StringBuilder builder = new StringBuilder();
-        String message = builder.append("Booking update!")
-                .append(System.lineSeparator())
-                .append("Id: ").append(booking.getId())
-                .append(System.lineSeparator())
-                .append("User id: ").append(booking.getUserId())
-                .append(System.lineSeparator())
-                .append("Accommodation id: ").append(booking.getAccommodationID())
-                .append(System.lineSeparator())
-                .append("Status: ").append(booking.getStatus())
-                .append(System.lineSeparator())
-                .append("Check in date: ").append(booking.getCheckInDate())
-                .append(System.lineSeparator())
-                .append("Check out date: ").append(booking.getCheckOutDate())
-                .toString();
+        String message = "Booking update!" +
+                System.lineSeparator() +
+                "Id: " + booking.getId() +
+                System.lineSeparator() +
+                "User id: " + booking.getUserId() +
+                System.lineSeparator() +
+                "Accommodation id: " + booking.getAccommodationID() +
+                System.lineSeparator() +
+                "Status: " + booking.getStatus() +
+                System.lineSeparator() +
+                "Check in date: " + booking.getCheckInDate() +
+                System.lineSeparator() +
+                "Check out date: " + booking.getCheckOutDate();
 
         NotificationEvent event = new NotificationEvent(this, message);
         eventPublisher.publishEvent(event);
