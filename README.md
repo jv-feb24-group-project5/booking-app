@@ -1,6 +1,8 @@
 ![Project Logo](images/logo_project.jpg)
 # Accommodation Service Web Application
 
+![Project Logo](images/pripyat.jpg)
+
 ## Introduction 📜
 
 Welcome to the Accommodation Service Web Application!
