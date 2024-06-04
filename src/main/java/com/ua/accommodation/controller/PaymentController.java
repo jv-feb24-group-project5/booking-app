@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,11 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Payment Management System", description = "Operations pertaining to "
-        + "payments in the system")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/checkout")
+@Tag(name = "Payments management", description = "Endpoints for managing payments")
 public class PaymentController {
     private final StripeService stripeService;
 
