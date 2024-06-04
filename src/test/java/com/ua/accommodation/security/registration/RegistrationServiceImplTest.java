@@ -6,8 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.ua.accommodation.dto.UserRegistrationRequestDto;
-import com.ua.accommodation.dto.UserRegistrationResponseDto;
+import com.ua.accommodation.dto.auth.UserRegistrationRequestDto;
+import com.ua.accommodation.dto.auth.UserRegistrationResponseDto;
 import com.ua.accommodation.exception.RegistrationException;
 import com.ua.accommodation.mapper.UserMapper;
 import com.ua.accommodation.model.Role;

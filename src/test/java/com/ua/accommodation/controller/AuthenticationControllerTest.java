@@ -8,10 +8,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ua.accommodation.dto.UserLoginRequestDto;
-import com.ua.accommodation.dto.UserLoginResponseDto;
-import com.ua.accommodation.dto.UserRegistrationRequestDto;
-import com.ua.accommodation.dto.UserRegistrationResponseDto;
+import com.ua.accommodation.dto.auth.UserLoginRequestDto;
+import com.ua.accommodation.dto.auth.UserLoginResponseDto;
+import com.ua.accommodation.dto.auth.UserRegistrationRequestDto;
+import com.ua.accommodation.dto.auth.UserRegistrationResponseDto;
 import com.ua.accommodation.security.authentication.AuthenticationService;
 import com.ua.accommodation.security.registration.RegistrationService;
 import org.junit.jupiter.api.BeforeEach;

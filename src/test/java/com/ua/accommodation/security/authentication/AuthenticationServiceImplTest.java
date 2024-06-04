@@ -6,8 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.ua.accommodation.dto.UserLoginRequestDto;
-import com.ua.accommodation.dto.UserLoginResponseDto;
+import com.ua.accommodation.dto.auth.UserLoginRequestDto;
+import com.ua.accommodation.dto.auth.UserLoginResponseDto;
 import com.ua.accommodation.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
