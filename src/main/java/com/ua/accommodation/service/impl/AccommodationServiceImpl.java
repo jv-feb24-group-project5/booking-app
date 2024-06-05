@@ -2,7 +2,6 @@ package com.ua.accommodation.service.impl;
 
 import com.ua.accommodation.dto.accommodation.AccommodationDto;
 import com.ua.accommodation.dto.accommodation.CreateAccommodationRequestDto;
-import com.ua.accommodation.exception.EntityNotFoundException;
 import com.ua.accommodation.mapper.AccommodationMapper;
 import com.ua.accommodation.model.Accommodation;
 import com.ua.accommodation.model.Address;
@@ -12,6 +11,7 @@ import com.ua.accommodation.repository.AddressRepository;
 import com.ua.accommodation.repository.AmenityRepository;
 import com.ua.accommodation.service.AccommodationService;
 import com.ua.accommodation.service.event.NotificationEvent;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
