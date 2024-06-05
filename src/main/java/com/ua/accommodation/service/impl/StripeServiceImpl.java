@@ -14,11 +14,13 @@ import com.ua.accommodation.mapper.PaymentMapper;
 import com.ua.accommodation.model.Booking;
 import com.ua.accommodation.model.Payment;
 import com.ua.accommodation.model.User;
+import com.ua.accommodation.repository.BookingRepository;
 import com.ua.accommodation.repository.PaymentRepository;
 import com.ua.accommodation.service.BookingService;
 import com.ua.accommodation.service.StripeService;
 import com.ua.accommodation.service.event.NotificationEvent;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,6 +42,7 @@ public class StripeServiceImpl implements StripeService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final BookingService bookingService;
+    private final BookingRepository bookingRepository;
     private final ApplicationEventPublisher eventPublisher;
     @Value("${stripe.secret.key}")
     private String stripeApiKey;
@@ -54,6 +57,10 @@ public class StripeServiceImpl implements StripeService {
     public PaymentResponseDto createPaymentSession(
             PaymentRequestDto sessionDto, Authentication authentication
     ) {
+        if (!bookingRepository.existsById(sessionDto.getBookingId())) {
+            throw new EntityNotFoundException("No booking with id "
+                    + sessionDto.getBookingId());
+        }
         User user = (User) authentication.getPrincipal();
         try {
             Customer customer = findOrCreateCustomer(
@@ -97,11 +104,9 @@ public class StripeServiceImpl implements StripeService {
             booking.setStatus(Booking.Status.CONFIRMED);
             bookingService.saveBooking(booking);
             responseDto.setMessage("Payment successful.");
-            publishEvent(payment);
             return responseDto;
         }
         responseDto.setMessage("Payment paused, you can complete it later.");
-        publishEvent(payment);
         return responseDto;
     }
 
@@ -111,7 +116,7 @@ public class StripeServiceImpl implements StripeService {
                 paymentRepository.findPaymentsByExpiresAtBefore(LocalDateTime.now());
         expiredPayments.forEach(payment -> payment.setStatus(Payment.Status.EXPIRED));
         paymentRepository.saveAll(expiredPayments);
-
+        expiredPayments.forEach(this::publishEvent);
     }
 
     public List<PaymentResponseDto> findPaymentsByUserId(Long userId, Pageable pageable) {
@@ -182,7 +187,9 @@ public class StripeServiceImpl implements StripeService {
                 + System.lineSeparator()
                 + "Created at: " + payment.getCreated()
                 + System.lineSeparator()
-                + "Expires at: " + payment.getExpiresAt();
+                + "Expires at: " + payment.getExpiresAt()
+                + System.lineSeparator()
+                + "Status: " + payment.getStatus();
 
         NotificationEvent event = new NotificationEvent(this, message);
         eventPublisher.publishEvent(event);
