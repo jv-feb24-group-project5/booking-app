@@ -1,5 +1,6 @@
 package com.ua.accommodation.exception;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
