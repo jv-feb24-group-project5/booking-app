@@ -1,6 +1,7 @@
 package com.ua.accommodation.controller;
 
 import com.ua.accommodation.dto.user.UserResponseDto;
+import com.ua.accommodation.dto.user.UserUpdateEmailDto;
 import com.ua.accommodation.dto.user.UserUpdateProfileDto;
 import com.ua.accommodation.dto.user.UserUpdateRoleDto;
 import com.ua.accommodation.model.User;
@@ -58,5 +59,18 @@ public class UserController {
             @AuthenticationPrincipal User user,
             @RequestBody @Valid UserUpdateProfileDto updateProfileDto) {
         return userService.updateProfile(user.getId(), updateProfileDto);
+    }
+
+    @PatchMapping("/newEmail")
+    @PreAuthorize("hasRole('USER')")
+    @Operation(
+            summary = "Update email",
+            description = "You can update your email, " +
+                    "but after that you need to log in with new email"
+    )
+    public UserResponseDto updateEmail(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid UserUpdateEmailDto updateDto) {
+        return userService.updateEmail(user.getEmail(), updateDto);
     }
 }
