@@ -47,7 +47,6 @@ public class AccommodationController {
             description = "Retrieves a list of all accommodations available in the system."
     )
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
     public List<AccommodationDto> getAllAccommodations(Pageable pageable) {
         return accommodationService.getAccommodations(pageable);
     }

@@ -42,7 +42,8 @@ public class SecurityConfig {
                                 "/checkout/payments/success/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/actuator/**")
+                                "/actuator/**",
+                                "/accommodations")
                         .permitAll()
                         .anyRequest()
                         .authenticated()
