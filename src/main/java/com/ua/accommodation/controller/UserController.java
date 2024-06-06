@@ -65,8 +65,8 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     @Operation(
             summary = "Update email",
-            description = "You can update your email, " +
-                    "but after that you need to log in with new email"
+            description = "You can update your email, "
+                    + "but after that you need to log in with new email"
     )
     public UserResponseDto updateEmail(
             @AuthenticationPrincipal User user,
