@@ -1,6 +1,7 @@
 package com.ua.accommodation.service.impl;
 
 import com.ua.accommodation.dto.user.UserResponseDto;
+import com.ua.accommodation.dto.user.UserUpdateEmailDto;
 import com.ua.accommodation.dto.user.UserUpdateProfileDto;
 import com.ua.accommodation.dto.user.UserUpdateRoleDto;
 import com.ua.accommodation.mapper.UserMapper;
@@ -19,9 +20,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto getUser(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new EntityNotFoundException("Can`t find user with email: " + email)
-        );
+        User user = getUserByEmail(email);
         return userMapper.toResponseDto(user);
     }
 
@@ -40,6 +39,20 @@ public class UserServiceImpl implements UserService {
         user.setLastName(updateProfileDto.getLastName());
         userRepository.save(user);
         return userMapper.toResponseDto(user);
+    }
+
+    @Override
+    public UserResponseDto updateEmail(String email, UserUpdateEmailDto updateDto) {
+        User user = getUserByEmail(email);
+        user.setEmail(updateDto.getNewEmail());
+        userRepository.save(user);
+        return userMapper.toResponseDto(user);
+    }
+
+    private User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new EntityNotFoundException("Can`t find user with email: " + email)
+        );
     }
 
     private User getUserById(Long userId) {
