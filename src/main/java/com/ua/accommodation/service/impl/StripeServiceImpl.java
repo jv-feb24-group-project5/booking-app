@@ -14,13 +14,12 @@ import com.ua.accommodation.mapper.PaymentMapper;
 import com.ua.accommodation.model.Booking;
 import com.ua.accommodation.model.Payment;
 import com.ua.accommodation.model.User;
-import com.ua.accommodation.repository.BookingRepository;
 import com.ua.accommodation.repository.PaymentRepository;
+import com.ua.accommodation.service.AccommodationService;
 import com.ua.accommodation.service.BookingService;
 import com.ua.accommodation.service.StripeService;
 import com.ua.accommodation.service.event.NotificationEvent;
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,8 +41,8 @@ public class StripeServiceImpl implements StripeService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final BookingService bookingService;
-    private final BookingRepository bookingRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final AccommodationService accommodationService;
     @Value("${stripe.secret.key}")
     private String stripeApiKey;
     @Value("${stripe.redirect.url}")
@@ -57,16 +56,18 @@ public class StripeServiceImpl implements StripeService {
     public PaymentResponseDto createPaymentSession(
             PaymentRequestDto sessionDto, Authentication authentication
     ) {
-        if (!bookingRepository.existsById(sessionDto.getBookingId())) {
-            throw new EntityNotFoundException("No booking with id "
-                    + sessionDto.getBookingId());
-        }
+        var booking = bookingService.getBooking(sessionDto.getBookingId());
+        var accommodation = accommodationService.getAccommodation(booking.getAccommodationID());
+        var duration = java.time.temporal.ChronoUnit.DAYS.between(
+                booking.getCheckInDate(),
+                booking.getCheckOutDate());
+        var amountTopay = accommodation.dailyRate().multiply(BigDecimal.valueOf(duration));
         User user = (User) authentication.getPrincipal();
         try {
             Customer customer = findOrCreateCustomer(
                     user.getEmail(), user.getFirstName());
             SessionCreateParams.Builder sessionCreateParamsBuilder = getParamsBuilder(
-                    sessionDto, customer);
+                    sessionDto, customer, amountTopay);
 
             SessionCreateParams.PaymentIntentData paymentIntentData =
                     SessionCreateParams.PaymentIntentData.builder()
@@ -126,8 +127,8 @@ public class StripeServiceImpl implements StripeService {
     }
 
     public SessionCreateParams.Builder getParamsBuilder(
-            PaymentRequestDto sessionDto, Customer customer
-    ) {
+            PaymentRequestDto sessionDto, Customer customer,
+            BigDecimal amountTopay) {
         SessionCreateParams.Builder sessionCreateParamsBuilder = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .setCustomer(customer.getId())
@@ -148,7 +149,7 @@ public class StripeServiceImpl implements StripeService {
                                         .build()
                                 )
                                 .setCurrency("USD")
-                                .setUnitAmountDecimal(sessionDto.getAmount()
+                                .setUnitAmountDecimal(amountTopay
                                         .multiply(BigDecimal.valueOf(100L))
                                 )
                                 .build())
