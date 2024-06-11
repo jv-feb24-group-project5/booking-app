@@ -32,6 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -79,12 +80,13 @@ class AccommodationControllerTest {
     @WithMockUser(username = "testUser", roles = {"USER"})
     void getAllAccommodations_ValidRequest_ReturnsListOfAccommodations() throws Exception {
         List<AccommodationDto> accommodations = Collections.singletonList(createResponseDto());
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 20, Sort.by("id"));
         given(accommodationService.getAccommodations(pageable)).willReturn(accommodations);
 
         mockMvc.perform(get("/accommodations")
                         .param("page", "0")
-                        .param("size", "10")
+                        .param("size", "20")
+                        .param("sort", "id")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(accommodations)));

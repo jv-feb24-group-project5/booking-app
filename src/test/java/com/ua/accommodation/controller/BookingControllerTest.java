@@ -26,11 +26,14 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,10 +41,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+@AutoConfigureMockMvc
+@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BookingControllerTest {
 
@@ -93,7 +99,7 @@ class BookingControllerTest {
     @WithMockUser(username = "adminUser", roles = {"ADMIN"})
     void getUsersBookingsByStatus_ValidRequest_ReturnsListOfBookings() throws Exception {
         List<BookingResponseDto> bookings = Collections.singletonList(createBookingResponseDto());
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 20, Sort.by("id"));
         given(bookingService.getUsersBookingsByStatus(eq(pageable), eq(1L), eq(Status.CONFIRMED)))
                 .willReturn(bookings);
 
@@ -101,7 +107,8 @@ class BookingControllerTest {
                         .param("user_id", "1")
                         .param("status", "CONFIRMED")
                         .param("page", "0")
-                        .param("size", "10")
+                        .param("size", "20")
+                        .param("sort", "id")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(bookings)));
@@ -120,14 +127,15 @@ class BookingControllerTest {
         setAuthentication(user);
 
         List<BookingResponseDto> bookings = Collections.singletonList(createBookingResponseDto());
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 20, Sort.by("id"));
         given(bookingService.getBookingsByUserId(eq(pageable), eq(user.getId())))
                 .willReturn(bookings);
 
         mockMvc.perform(get("/bookings/my")
                         .with(SecurityMockMvcRequestPostProcessors.user(user))
                         .param("page", "0")
-                        .param("size", "10")
+                        .param("size", "20")
+                        .param("sort", "id")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(bookings)));
