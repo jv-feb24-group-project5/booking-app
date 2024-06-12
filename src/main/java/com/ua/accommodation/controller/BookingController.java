@@ -11,7 +11,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,7 +41,8 @@ public class BookingController {
     )
     public BookingResponseDto createBooking(
             @AuthenticationPrincipal User user,
-            @RequestBody @Valid BookingRequestDto requestDto) {
+            @RequestBody @Valid BookingRequestDto requestDto
+    ) {
         return bookingService.createBooking(user.getId(), requestDto);
     }
 
@@ -50,9 +53,10 @@ public class BookingController {
             description = "Get list of bookings based on status"
     )
     public List<BookingResponseDto> getUsersBookingsByStatus(
-            Pageable pageable,
+            @ParameterObject @PageableDefault(size = 20, sort = "id") Pageable pageable,
             @RequestParam(name = "user_id") Long userId,
-            @RequestParam Status status) {
+            @RequestParam Status status
+    ) {
         return bookingService.getUsersBookingsByStatus(pageable, userId, status);
     }
 
@@ -63,8 +67,9 @@ public class BookingController {
             description = "Get list of bookings for current user"
     )
     public List<BookingResponseDto> getUsersBookings(
-            Pageable pageable,
-            @AuthenticationPrincipal User user) {
+            @ParameterObject @PageableDefault(size = 20, sort = "id") Pageable pageable,
+            @AuthenticationPrincipal User user
+    ) {
         return bookingService.getBookingsByUserId(pageable, user.getId());
     }
 
@@ -76,7 +81,8 @@ public class BookingController {
     )
     public BookingResponseDto getBookingById(
             @AuthenticationPrincipal User user,
-            @PathVariable Long bookingId) {
+            @PathVariable Long bookingId
+    ) {
         return bookingService.getBookingById(
                 user.getId(),
                 user.getRoles(),
@@ -93,7 +99,8 @@ public class BookingController {
     public BookingResponseDto updateBooking(
             @AuthenticationPrincipal User user,
             @PathVariable Long bookingId,
-            @RequestBody @Valid BookingUpdateDto updateDtoDto) {
+            @RequestBody @Valid BookingUpdateDto updateDtoDto
+    ) {
         return bookingService.updateBookingById(
                 user.getId(),
                 user.getRoles(),
@@ -109,7 +116,8 @@ public class BookingController {
     )
     public BookingResponseDto deleteBooking(
             @AuthenticationPrincipal User user,
-            @PathVariable Long bookingId) {
+            @PathVariable Long bookingId
+    ) {
         return bookingService.deleteBookingById(
                 user.getId(),
                 user.getRoles(),

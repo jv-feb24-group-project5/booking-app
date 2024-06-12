@@ -31,8 +31,11 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Operation(
             summary = "Get information about user",
-            description = "Get information about current authenticate user")
-    public UserResponseDto getUser(@AuthenticationPrincipal User user) {
+            description = "Get information about current authenticate user"
+    )
+    public UserResponseDto getUser(
+            @AuthenticationPrincipal User user
+    ) {
         return userService.getUser(user.getEmail());
     }
 
@@ -41,10 +44,12 @@ public class UserController {
     @Operation(
             summary = "Update roles",
             description = "Update roles for user by user id. Available only for admins. "
-                    + "You need make request with Set roles. Don't forget about id")
+                    + "You need make request with Set roles. Don't forget about id"
+    )
     public UserResponseDto updateRoles(
             @PathVariable Long id,
-            @RequestBody @Valid UserUpdateRoleDto updateRoleDto) {
+            @RequestBody @Valid UserUpdateRoleDto updateRoleDto
+    ) {
         return userService.updateRoles(id, updateRoleDto);
     }
 
@@ -54,10 +59,12 @@ public class UserController {
             summary = "Update profile",
             description = "You can update personal info about user. "
                     + "You need give all fields in request. "
-                    + "If you don't wanna change something just give old value")
+                    + "If you don't wanna change something just give old value"
+    )
     public UserResponseDto updateProfile(
             @AuthenticationPrincipal User user,
-            @RequestBody @Valid UserUpdateProfileDto updateProfileDto) {
+            @RequestBody @Valid UserUpdateProfileDto updateProfileDto
+    ) {
         return userService.updateProfile(user.getId(), updateProfileDto);
     }
 
@@ -70,7 +77,8 @@ public class UserController {
     )
     public UserResponseDto updateEmail(
             @AuthenticationPrincipal User user,
-            @RequestBody @Valid UserUpdateEmailDto updateDto) {
+            @RequestBody @Valid UserUpdateEmailDto updateDto
+    ) {
         return userService.updateEmail(user.getEmail(), updateDto);
     }
 }

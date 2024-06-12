@@ -8,7 +8,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,7 +49,9 @@ public class AccommodationController {
             description = "Retrieves a list of all accommodations available in the system."
     )
     @GetMapping
-    public List<AccommodationDto> getAllAccommodations(Pageable pageable) {
+    public List<AccommodationDto> getAllAccommodations(
+            @ParameterObject @PageableDefault(size = 20, sort = "id") Pageable pageable
+    ) {
         return accommodationService.getAccommodations(pageable);
     }
 
@@ -57,7 +61,9 @@ public class AccommodationController {
     )
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public AccommodationDto getAccommodationById(@PathVariable Long id) {
+    public AccommodationDto getAccommodationById(
+            @PathVariable Long id
+    ) {
         return accommodationService.getAccommodation(id);
     }
 
@@ -69,7 +75,8 @@ public class AccommodationController {
     @PreAuthorize("hasRole('ADMIN')")
     public AccommodationDto updateAccommodation(
             @PathVariable Long id,
-            @RequestBody @Valid CreateAccommodationRequestDto updatedAccommodation) {
+            @RequestBody @Valid CreateAccommodationRequestDto updatedAccommodation
+    ) {
         return accommodationService.updateAccommodation(id, updatedAccommodation);
     }
 
@@ -82,7 +89,8 @@ public class AccommodationController {
     @PreAuthorize("hasRole('ADMIN')")
     public AccommodationDto partiallyUpdateAccommodation(
             @PathVariable Long id,
-            @RequestBody @Valid CreateAccommodationRequestDto updatedAccommodation) {
+            @RequestBody @Valid CreateAccommodationRequestDto updatedAccommodation
+    ) {
         return accommodationService.patchAccommodation(id, updatedAccommodation);
     }
 

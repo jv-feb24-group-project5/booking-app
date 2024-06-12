@@ -61,13 +61,21 @@ public class StripeServiceImpl implements StripeService {
         var duration = java.time.temporal.ChronoUnit.DAYS.between(
                 booking.getCheckInDate(),
                 booking.getCheckOutDate());
-        var amountTopay = accommodation.dailyRate().multiply(BigDecimal.valueOf(duration));
+        var amountToPay = accommodation.dailyRate().multiply(BigDecimal.valueOf(duration));
         User user = (User) authentication.getPrincipal();
+        return getPaymentResponseDto(sessionDto, user, amountToPay);
+    }
+
+    private PaymentResponseDto getPaymentResponseDto(
+            PaymentRequestDto sessionDto,
+            User user,
+            BigDecimal amountToPay
+    ) {
         try {
             Customer customer = findOrCreateCustomer(
                     user.getEmail(), user.getFirstName());
             SessionCreateParams.Builder sessionCreateParamsBuilder = getParamsBuilder(
-                    sessionDto, customer, amountTopay);
+                    sessionDto, customer, amountToPay);
 
             SessionCreateParams.PaymentIntentData paymentIntentData =
                     SessionCreateParams.PaymentIntentData.builder()
@@ -98,16 +106,21 @@ public class StripeServiceImpl implements StripeService {
         );
         PaymentResponseDto responseDto = paymentMapper.toDto(payment);
         if (session.getPaymentStatus().equals("paid")) {
-            payment.setStatus(Payment.Status.PAID);
-            paymentRepository.save(payment);
-            responseDto = paymentMapper.toDto(payment);
-            Booking booking = bookingService.getBooking(payment.getBookingId());
-            booking.setStatus(Booking.Status.CONFIRMED);
-            bookingService.saveBooking(booking);
-            responseDto.setMessage("Payment successful.");
-            return responseDto;
+            return getPaymentResponseDtoFromPayment(payment);
         }
         responseDto.setMessage("Payment paused, you can complete it later.");
+        return responseDto;
+    }
+
+    private PaymentResponseDto getPaymentResponseDtoFromPayment(Payment payment) {
+        PaymentResponseDto responseDto;
+        payment.setStatus(Payment.Status.PAID);
+        paymentRepository.save(payment);
+        responseDto = paymentMapper.toDto(payment);
+        Booking booking = bookingService.getBooking(payment.getBookingId());
+        booking.setStatus(Booking.Status.CONFIRMED);
+        bookingService.saveBooking(booking);
+        responseDto.setMessage("Payment successful.");
         return responseDto;
     }
 
@@ -128,7 +141,7 @@ public class StripeServiceImpl implements StripeService {
 
     public SessionCreateParams.Builder getParamsBuilder(
             PaymentRequestDto sessionDto, Customer customer,
-            BigDecimal amountTopay) {
+            BigDecimal amountToPay) {
         SessionCreateParams.Builder sessionCreateParamsBuilder = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .setCustomer(customer.getId())
@@ -149,7 +162,7 @@ public class StripeServiceImpl implements StripeService {
                                         .build()
                                 )
                                 .setCurrency("USD")
-                                .setUnitAmountDecimal(amountTopay
+                                .setUnitAmountDecimal(amountToPay
                                         .multiply(BigDecimal.valueOf(100L))
                                 )
                                 .build())
