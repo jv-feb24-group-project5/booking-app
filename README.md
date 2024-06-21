@@ -1,7 +1,7 @@
-![Project Logo](images/logo_project.jpg)
+
 # Accommodation Service Web Application
 
-![Project Logo](images/pripyat.jpg)
+![Project Logo](images/student-accommodation.jpg)
 
 ## Introduction 📜
 
